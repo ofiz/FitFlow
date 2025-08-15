@@ -1,0 +1,166 @@
+/* קונטיינר כללי - תואם לעמוד הבית */
+.register-container {
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* כרטיס ההרשמה - זכוכית כהה */
+.register-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* כותרת - צבעים כמו בעמוד הבית */
+.register-card h1 {
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* טופס */
+.register-form {
+  width: 100%;
+}
+
+/* קבוצת שדות */
+.form-group {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* תוויות - צבע לבן */
+.form-group label {
+  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+/* שדות קלט - רקע כהה */
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 16px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* placeholder */
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* פוקוס על שדות */
+.form-group input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* כפתור הרשמה */
+.register-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* אפקט על כפתור */
+.register-button:hover {
+  transform: translateY(-2px);
+}
+
+/* קישור להתחברות */
+.login-link {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.login-link a {
+  color: #4ecdc4;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+  color: #ff6b6b;
+  text-decoration: underline;
+}
+
+/* Custom Alert Styles */
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 300px;
+  animation: slideIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.custom-alert--error {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.9), rgba(238, 90, 90, 0.9));
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.custom-alert--success {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.9), rgba(68, 160, 141, 0.9));
+  border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
