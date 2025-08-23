@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';  // תוסיף את זה
-import '../styles/components/Home.css'; // תיקון הנתיב
+import { Link } from 'react-router-dom';  
+import '../styles/components/Home.css'; 
+
 
 const Home = () => {
     useEffect(() => {
@@ -66,7 +67,7 @@ const Home = () => {
             <div className="logo-text">FitFlow</div>
           </div>
           <div className="auth-buttons">
-            <a href="#login" className="btn btn-ghost">Sign In</a>
+            <Link to="/login" className="btn btn-primary">Sign In</Link>
             <Link to="/register" className="btn btn-primary">Sign Up</Link>
           </div>
         </nav>
