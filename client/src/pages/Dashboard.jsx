@@ -1,11 +1,115 @@
-import React from "react";
+// src/components/Dashboard.jsx
+import React, { useState } from 'react';
+import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X } from 'lucide-react';
+import '../styles/components/Dashboard.css';
 
-function Dashboard() {
+// Import sub-components
+import OverviewTab from '../components/tabs/OverviewTab';
+import WorkoutsTab from '../components/tabs/WorkoutsTab';
+import NutritionTab from '../components/tabs/NutritionTab';
+import ProgressTab from '../components/tabs/ProgressTab';
+import GoalsTab from '../components/tabs/GoalsTab';
+import CalculatorTab from '../components/tabs/CalculatorTab';
+import TriviaTab from '../components/tabs/TriviaTab';
+import AnalyticsTab from '../components/tabs/AnalyticsTab';
+import AICoachTab from '../components/tabs/AICoachTab';
+import ProfileTab from '../components/tabs/ProfileTab';
+
+const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const menuItems = [
+    { id: 'overview', icon: Home, label: 'Overview', color: 'purple-pink' },
+    { id: 'workouts', icon: Dumbbell, label: 'Workouts', color: 'orange-red' },
+    { id: 'nutrition', icon: Apple, label: 'Nutrition Tracker', color: 'green-emerald' },
+    { id: 'progress', icon: Camera, label: 'Progress Gallery', color: 'blue-cyan' },
+    { id: 'goals', icon: Target, label: 'Goals', color: 'yellow-orange' },
+    { id: 'calculator', icon: Calculator, label: 'Calorie Calculator', color: 'red-pink' },
+    { id: 'trivia', icon: Brain, label: 'Nutrition Trivia', color: 'indigo-purple' },
+    { id: 'analytics', icon: TrendingUp, label: 'Analytics', color: 'teal-green' },
+    { id: 'ai-coach', icon: MessageCircle, label: 'AI Coach', color: 'violet-purple' },
+    { id: 'profile', icon: User, label: 'Profile', color: 'gray-slate' },
+  ];
+
+  const renderContent = () => {
+    switch(activeTab) {
+      case 'overview': return <OverviewTab />;
+      case 'workouts': return <WorkoutsTab />;
+      case 'nutrition': return <NutritionTab />;
+      case 'progress': return <ProgressTab />;
+      case 'goals': return <GoalsTab />;
+      case 'calculator': return <CalculatorTab />;
+      case 'trivia': return <TriviaTab />;
+      case 'analytics': return <AnalyticsTab />;
+      case 'ai-coach': return <AICoachTab />;
+      case 'profile': return <ProfileTab />;
+      default: return <OverviewTab />;
+    }
+  };
+
   return (
-    <div style={{ color: "white", textAlign: "center", marginTop: "50px" }}>
-      <h1>Welcome to your Dashboard 🎉</h1>
+    <div className="dashboard">
+      {/* Sidebar */}
+      <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+        {/* Logo */}
+        <div className="sidebar-header">
+          {sidebarOpen && (
+            <div className="logo-container">
+              <div className="logo-icon">
+                <Dumbbell className="logo-icon-svg" />
+              </div>
+              <span className="logo-text">FitFlow</span>
+            </div>
+          )}
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="toggle-btn"
+          >
+            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {/* Menu Items */}
+        <nav className="sidebar-nav">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`nav-item ${isActive ? 'active' : ''} ${item.color}`}
+              >
+                <Icon size={20} />
+                {sidebarOpen && <span>{item.label}</span>}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* User Section */}
+        <div className="sidebar-footer">
+          <div className={`user-info ${!sidebarOpen ? 'collapsed' : ''}`}>
+            <div className="user-avatar">JD</div>
+            {sidebarOpen && (
+              <div className="user-details">
+                <div className="user-name">John Doe</div>
+                <div className="user-status">Premium Member</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="content-wrapper">
+          {renderContent()}
+        </div>
+      </main>
     </div>
   );
-}
+};
 
 export default Dashboard;

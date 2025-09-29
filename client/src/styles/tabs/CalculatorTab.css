@@ -1,0 +1,124 @@
+.calculator-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.gradient-red-pink {
+  background: linear-gradient(135deg, #f87171, #f9a8d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.calculator-container {
+    width: 100%;
+}
+
+.calculator-form {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.calculate-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444, #ec4899);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.calculate-btn:hover {
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.result-card {
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.result-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.result-item strong {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .calculator-container {
+    max-width: 100%;
+  }
+}

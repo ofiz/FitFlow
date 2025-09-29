@@ -1,0 +1,64 @@
+.analytics-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.gradient-teal-green {
+  background: linear-gradient(135deg, #2dd4bf, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.chart-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.chart-placeholder {
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.chart-placeholder p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}

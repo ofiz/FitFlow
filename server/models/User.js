@@ -1,21 +1,48 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   email: {
     type: String,
     required: true,
-    unique: true,
-    lowercase: true
+    unique: true
   },
   password: {
     type: String,
-    required: true,
-    minlength: 8
+    required: true
+  },
+  currentWeight: {
+    type: Number,
+    default: 0
+  },
+  targetWeight: {
+    type: Number,
+    default: 0
+  },
+  height: {
+    type: Number,
+    default: 0
+  },
+  age: {
+    type: Number,
+    default: 0
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+    default: 'other'
+  },
+  activityLevel: {
+    type: String,
+    enum: ['sedentary', 'light', 'moderate', 'active', 'very_active'],
+    default: 'moderate'
+  },
+  calorieGoal: {
+    type: Number,
+    default: 2000
   },
   createdAt: {
     type: Date,
@@ -23,4 +50,4 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);

@@ -71,6 +71,8 @@ const handleSubmit = async (e) => {
 
       // Send login request to server
       const result = await submitToServer(userData);
+      console.log("Server response:", result);
+      localStorage.setItem('token', result.token);
 
       // Show success alert
       showAlert("Login successful!", "success");
