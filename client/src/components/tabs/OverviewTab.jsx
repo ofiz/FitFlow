@@ -1,13 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, Dumbbell, Apple, Camera } from 'lucide-react';
+import { dashboardAPI, userAPI } from '../../utils/api';
 import '../../styles/tabs/OverviewTab.css';
 
 const OverviewTab = () => {
+  const [stats, setStats] = useState({
+    workoutsThisWeek: 0,
+    workoutsChange: 0,
+    caloriesToday: 0,
+    caloriesRemaining: 0,
+    currentWeight: 0,
+    weightChange: 0,
+    activeStreak: 0
+  });
+  const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [statsData, userData] = await Promise.all([
+        dashboardAPI.getStats(),
+        userAPI.getProfile()
+      ]);
+      
+      setStats(statsData);
+      setUserName(userData.name || 'there');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="overview-tab">
+        <div className="loading-container">
+          <p>Loading your stats...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="overview-tab">
       <div className="tab-header">
         <h1 className="tab-title gradient-purple-pink">
-          Welcome Back, John! 👋
+          Welcome Back, {userName}! 👋
         </h1>
         <p className="tab-subtitle">Here's your fitness summary for today</p>
       </div>
@@ -15,25 +58,25 @@ const OverviewTab = () => {
       <div className="stats-grid">
         <StatCard 
           title="Workouts This Week" 
-          value="5" 
-          subtitle="+2 from last week" 
+          value={stats.workoutsThisWeek} 
+          subtitle={`${stats.workoutsChange >= 0 ? '+' : ''}${stats.workoutsChange} from last week`} 
           gradient="orange-red" 
         />
         <StatCard 
           title="Calories Today" 
-          value="1,850" 
-          subtitle="350 remaining" 
+          value={stats.caloriesToday} 
+          subtitle={`${stats.caloriesRemaining} remaining`} 
           gradient="green-emerald" 
         />
         <StatCard 
           title="Current Weight" 
-          value="75 kg" 
-          subtitle="-2kg this month" 
+          value={stats.currentWeight > 0 ? `${stats.currentWeight} kg` : 'Not set'} 
+          subtitle={`${stats.weightChange}kg this month`} 
           gradient="blue-cyan" 
         />
         <StatCard 
           title="Active Streak" 
-          value="12 days" 
+          value={`${stats.activeStreak} days`} 
           subtitle="Keep it up! 🔥" 
           gradient="purple-pink" 
         />

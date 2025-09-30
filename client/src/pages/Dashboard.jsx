@@ -1,6 +1,7 @@
 // src/components/Dashboard.jsx
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X } from 'lucide-react';
+import { userAPI } from '../utils/api';
 import '../styles/components/Dashboard.css';
 
 // Import sub-components
@@ -18,6 +19,20 @@ import ProfileTab from '../components/tabs/ProfileTab';
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userData, setUserData] = useState({ name: '', email: '' });
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const data = await userAPI.getProfile();
+      setUserData(data);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
 
   const menuItems = [
     { id: 'overview', icon: Home, label: 'Overview', color: 'purple-pink' },
@@ -89,17 +104,19 @@ const Dashboard = () => {
         </nav>
 
         {/* User Section */}
-        <div className="sidebar-footer">
-          <div className={`user-info ${!sidebarOpen ? 'collapsed' : ''}`}>
-            <div className="user-avatar">JD</div>
-            {sidebarOpen && (
-              <div className="user-details">
-                <div className="user-name">John Doe</div>
-                <div className="user-status">Premium Member</div>
+          <div className="sidebar-footer">
+            <div className={`user-info ${!sidebarOpen ? 'collapsed' : ''}`}>
+              <div className="user-avatar">
+                {userData.name ? userData.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
               </div>
-            )}
+              {sidebarOpen && (
+                <div className="user-details">
+                  <div className="user-name">{userData.name || 'User'}</div>
+                  <div className="user-status">Premium Member</div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
       </aside>
 
       {/* Main Content */}
