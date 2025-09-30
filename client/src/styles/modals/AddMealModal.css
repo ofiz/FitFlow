@@ -1,0 +1,15 @@
+/* Reuse most styles from AddWorkoutModal.css */
+@import './AddWorkoutModal.css';
+
+/* Additional style for macros row */
+.macros-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .macros-row {
+    grid-template-columns: 1fr;
+  }
+}
