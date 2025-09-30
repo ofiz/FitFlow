@@ -6,6 +6,14 @@ const User = require('../models/User');
 exports.getStats = async (req, res) => {
   try {
     const userId = req.user.id;
+    
+    // Get user data first
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -33,11 +41,10 @@ exports.getStats = async (req, res) => {
       date: { $gte: today }
     });
     
-    const caloriesToday = mealsToday.reduce((sum, meal) => sum + meal.calories, 0);
-
-    // Get user data
-    const user = await User.findById(userId);
-    const caloriesRemaining = user.calorieGoal - caloriesToday;
+    const caloriesToday = mealsToday.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+    
+    const calorieGoal = user.calorieGoal || 2000; // ברירת מחדל
+    const caloriesRemaining = calorieGoal - caloriesToday;
 
     // Calculate active streak
     let activeStreak = 0;

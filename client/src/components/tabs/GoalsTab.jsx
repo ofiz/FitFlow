@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Target } from 'lucide-react';
+import { Target, Plus } from 'lucide-react';
 import { goalsAPI } from '../../utils/api';
+import AddGoalModal from '../modals/AddGoalModal';
 import '../../styles/tabs/GoalsTab.css';
 
 const GoalsTab = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
 
   useEffect(() => {
     fetchGoals();
@@ -19,6 +21,28 @@ const GoalsTab = () => {
       console.error('Error fetching goals:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle saving new goal
+  const handleSaveGoal = async (goalData) => {
+    try {
+      console.log('Sending goal data:', goalData);
+      
+      // Call API to create goal
+      await goalsAPI.create(goalData);
+      
+      // Close modal
+      setIsModalOpen(false);
+      
+      // Refresh goals list
+      fetchGoals();
+      
+      // Success message
+      alert('Goal added successfully!');
+    } catch (error) {
+      console.error('Error adding goal:', error);
+      alert('Failed to add goal. Please try again.');
     }
   };
 
@@ -43,6 +67,12 @@ const GoalsTab = () => {
         </p>
       </div>
 
+      {/* Add Goal Button */}
+      <button className="add-goal-btn" onClick={() => setIsModalOpen(true)}>
+        <Plus size={20} />
+        Add Goal
+      </button>
+
       <div className="goals-list">
         {goals.length > 0 ? (
           goals.map((goal) => (
@@ -63,6 +93,13 @@ const GoalsTab = () => {
           </div>
         )}
       </div>
+
+      {/* Modal Component */}
+      <AddGoalModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveGoal}
+      />
     </div>
   );
 };

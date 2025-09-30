@@ -4,11 +4,12 @@ const workoutSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: [true, 'User is required'],
   },
   title: {
     type: String,
-    required: true
+    required: [true, 'Title is required'],
+    trim: true,
   },
   exercises: [{
     name: String,
@@ -19,7 +20,8 @@ const workoutSchema = new mongoose.Schema({
   }],
   duration: {
     type: Number,
-    required: true
+    required: [true, 'Duration is required'],
+    min: [1, 'Duration must be greater than 0'],
   },
   difficulty: {
     type: String,
@@ -35,6 +37,6 @@ const workoutSchema = new mongoose.Schema({
     default: Date.now
   },
   notes: String
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Workout', workoutSchema);

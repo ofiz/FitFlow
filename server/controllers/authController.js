@@ -2,9 +2,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const User = require('../models/User');
 
+// Helper function to validate email format
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+
+        // Validate email format
+        if (!isValidEmail(email)) {
+          return res.status(400).json({ message: "Invalid email format" });
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -22,8 +33,15 @@ const registerUser = async (req, res) => {
 
         await user.save();
 
+        const token = jwt.sign(
+          { id: user._id },
+          process.env.JWT_SECRET,
+          { expiresIn: process.env.JWT_EXPIRE || '30d' }
+        );
+
         res.status(201).json({
             message: "User registered successfully",
+            token: token, 
             user: {
                 id: user._id,
                 name: user.name,
@@ -36,6 +54,7 @@ const registerUser = async (req, res) => {
         res.status(500).json({ message: "Server error" })
     }
 };
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -56,14 +75,14 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
+      { expiresIn: process.env.JWT_EXPIRE || '30d' }
     );
 
     // 4. Send token in cookie (HttpOnly)
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only https in prod
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     // 5. Send success response
@@ -81,4 +100,5 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 module.exports = { registerUser, loginUser };
