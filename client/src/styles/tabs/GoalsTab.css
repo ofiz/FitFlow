@@ -99,3 +99,23 @@
   color: rgba(255, 255, 255, 0.4);
   margin-top: 8px;
 }
+
+.add-goal-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #eab308, #f97316);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 24px;
+}
+
+.add-goal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(234, 179, 8, 0.3);
+}
