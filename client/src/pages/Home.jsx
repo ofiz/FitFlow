@@ -83,7 +83,7 @@ const Home = () => {
           <p className="hero-subtitle">The ultimate platform for tracking, training, and achieving your fitness goals</p>
           <div className="hero-cta">
             <Link to="/register" className="btn btn-hero btn-explore">Start Your Journey</Link>
-            <a href="#dashboard" className="btn btn-hero btn-guest">Explore as Guest</a>
+            <Link to="/dashboard" className="btn btn-hero btn-guest">Explore as Guest</Link>
           </div>
         </div>
       </section>

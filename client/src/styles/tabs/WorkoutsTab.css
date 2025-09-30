@@ -1,0 +1,86 @@
+.workouts-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.gradient-orange-red {
+  background: linear-gradient(135deg, #fb923c, #f87171);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.workouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.workout-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.workout-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+}
+
+.workout-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.workout-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.workout-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.workout-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.workout-btn:hover {
+  box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .workouts-grid {
+    grid-template-columns: 1fr;
+  }
+}
