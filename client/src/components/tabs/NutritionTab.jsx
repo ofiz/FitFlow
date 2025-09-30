@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Apple } from 'lucide-react';
+import { Apple, Plus } from 'lucide-react';
 import { nutritionAPI } from '../../utils/api';
+import AddMealModal from '../modals/AddMealModal';
 import '../../styles/tabs/NutritionTab.css';
 
 const NutritionTab = () => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
 
   useEffect(() => {
     fetchMeals();
@@ -19,6 +21,28 @@ const NutritionTab = () => {
       console.error('Error fetching meals:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle saving new meal
+  const handleSaveMeal = async (mealData) => {
+    try {
+      console.log('Sending meal data:', mealData);
+      
+      // Call API to create meal
+      await nutritionAPI.addMeal(mealData);
+      
+      // Close modal
+      setIsModalOpen(false);
+      
+      // Refresh meals list
+      fetchMeals();
+      
+      // Success message
+      alert('Meal added successfully!');
+    } catch (error) {
+      console.error('Error adding meal:', error);
+      alert('Failed to add meal. Please try again.');
     }
   };
 
@@ -50,6 +74,12 @@ const NutritionTab = () => {
         </h1>
         <p className="tab-subtitle">Track your daily meals and macros</p>
       </div>
+
+      {/* Add Meal Button */}
+      <button className="add-meal-btn" onClick={() => setIsModalOpen(true)}>
+        <Plus size={20} />
+        Add Meal
+      </button>
 
       <div className="nutrition-grid">
         <div className="nutrition-card">
@@ -83,6 +113,13 @@ const NutritionTab = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Component */}
+      <AddMealModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveMeal}
+      />
     </div>
   );
 };
