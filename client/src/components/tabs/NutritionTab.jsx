@@ -1,8 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Apple } from 'lucide-react';
+import { nutritionAPI } from '../../utils/api';
 import '../../styles/tabs/NutritionTab.css';
 
 const NutritionTab = () => {
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMeals();
+  }, []);
+
+  const fetchMeals = async () => {
+    try {
+      const data = await nutritionAPI.getToday();
+      setMeals(data);
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateMacros = () => {
+    const totals = meals.reduce((acc, meal) => ({
+      protein: acc.protein + (meal.protein || 0),
+      carbs: acc.carbs + (meal.carbs || 0),
+      fats: acc.fats + (meal.fats || 0)
+    }), { protein: 0, carbs: 0, fats: 0 });
+
+    return totals;
+  };
+
+  const macros = calculateMacros();
+
+  if (loading) {
+    return (
+      <div className="nutrition-tab">
+        <p>Loading meals...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="nutrition-tab">
       <div className="tab-header">
@@ -16,19 +55,31 @@ const NutritionTab = () => {
         <div className="nutrition-card">
           <h3 className="card-title">Today's Meals</h3>
           <div className="meals-list">
-            <MealEntry meal="Breakfast" calories={450} time="8:00 AM" />
-            <MealEntry meal="Lunch" calories={650} time="1:00 PM" />
-            <MealEntry meal="Snack" calories={200} time="4:00 PM" />
-            <MealEntry meal="Dinner" calories={550} time="7:00 PM" />
+            {meals.length > 0 ? (
+              meals.map((meal) => (
+                <MealEntry 
+                  key={meal._id}
+                  meal={meal.mealType}
+                  name={meal.name}
+                  calories={meal.calories}
+                  time={meal.time}
+                />
+              ))
+            ) : (
+              <div className="empty-meals">
+                <Apple size={48} className="empty-icon" />
+                <p>No meals logged today</p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="nutrition-card">
           <h3 className="card-title">Macros Breakdown</h3>
           <div className="macros-list">
-            <MacroBar label="Protein" value={120} max={150} color="red" />
-            <MacroBar label="Carbs" value={180} max={250} color="yellow" />
-            <MacroBar label="Fats" value={50} max={70} color="blue" />
+            <MacroBar label="Protein" value={macros.protein} max={150} color="red" />
+            <MacroBar label="Carbs" value={macros.carbs} max={250} color="yellow" />
+            <MacroBar label="Fats" value={macros.fats} max={70} color="blue" />
           </div>
         </div>
       </div>
@@ -36,11 +87,11 @@ const NutritionTab = () => {
   );
 };
 
-const MealEntry = ({ meal, calories, time }) => (
+const MealEntry = ({ meal, name, calories, time }) => (
   <div className="meal-entry">
     <div className="meal-info">
       <h4 className="meal-name">{meal}</h4>
-      <p className="meal-time">{time}</p>
+      <p className="meal-time">{name} - {time}</p>
     </div>
     <div className="meal-calories">
       <p className="calories-value">{calories} cal</p>
@@ -57,7 +108,7 @@ const MacroBar = ({ label, value, max, color }) => (
     <div className="macro-progress">
       <div 
         className={`macro-fill macro-${color}`} 
-        style={{ width: `${(value/max)*100}%` }}
+        style={{ width: `${Math.min((value/max)*100, 100)}%` }}
       />
     </div>
   </div>

@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
+import { userAPI } from '../../utils/api';
 import '../../styles/tabs/AICoachTab.css';
 
 const AICoachTab = () => {
   const [message, setMessage] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    fetchUserName();
+  }, []);
+
+  const fetchUserName = async () => {
+    try {
+      const data = await userAPI.getProfile();
+      setUserName(data.name || 'there');
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+      setUserName('there');
+    }
+  };
 
   return (
     <div className="ai-coach-tab">
@@ -18,7 +34,7 @@ const AICoachTab = () => {
         <div className="chat-messages">
           <ChatMessage 
             sender="ai" 
-            message="Hello! I'm your AI fitness coach. How can I help you today?" 
+            message={`Hello ${userName}! I'm your AI fitness coach. How can I help you today?`}
           />
           <ChatMessage 
             sender="user" 
