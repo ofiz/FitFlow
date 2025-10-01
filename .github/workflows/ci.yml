@@ -31,6 +31,8 @@ jobs:
         run: npm run test:ci
         env:
           NODE_ENV: test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRE: 30d
       
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
