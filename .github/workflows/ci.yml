@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, dashboard ]
+    branches: [ main, master, dashboard ]  # הוסף master
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]  # הוסף master
 
 jobs:
   test:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
       
@@ -76,7 +76,7 @@ jobs:
     name: Push to Docker Hub
     needs: [test, build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
       - name: Checkout code
