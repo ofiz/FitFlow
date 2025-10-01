@@ -311,14 +311,5 @@ User {
    - Remove React.StrictMode for development
    - Or implement alert deduplication
 
----
 
-## 📞 Support
 
-For support and questions, please open an issue in the repository.
-
----
-
-## 📄 License
-
-This project is licensed under the ISC License.
