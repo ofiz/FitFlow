@@ -79,6 +79,7 @@ exports.createGoal = async (req, res) => {
 
     const goal = new Goal({
       userId: req.user.id,
+      initial: current,  
       ...req.body
     });
     
