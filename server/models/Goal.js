@@ -10,6 +10,10 @@ const goalSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  initial: {
+    type: Number,
+    required: true
+  },
   current: {
     type: Number,
     required: true
@@ -26,11 +30,7 @@ const goalSchema = new mongoose.Schema({
     type: String,
     enum: ['weight', 'strength', 'endurance', 'other'],
     default: 'other'
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Goal', goalSchema);
