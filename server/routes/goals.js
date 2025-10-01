@@ -6,6 +6,9 @@ const goalController = require('../controllers/goalController');
 // GET all goals
 router.get('/', auth, goalController.getAllGoals);
 
+// GET goal by ID
+router.get('/:id', auth, goalController.getGoalById);
+
 // POST create goal
 router.post('/', auth, goalController.createGoal);
 

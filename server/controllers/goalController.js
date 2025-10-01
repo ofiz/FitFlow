@@ -1,13 +1,67 @@
 const Goal = require('../models/Goal');
 
+// Helper function for date filtering
+function getDateFilter(period) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  switch (period) {
+    case 'today':
+      return { $gte: today };
+    case 'week':
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return { $gte: weekAgo };
+    case 'month':
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return { $gte: monthAgo };
+    case 'year':
+      const yearAgo = new Date(today);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return { $gte: yearAgo };
+    default:
+      return null;
+  }
+}
+
 // Get all goals
 exports.getAllGoals = async (req, res) => {
   try {
-    const goals = await Goal.find({ userId: req.user.id })
-      .sort({ createdAt: -1 });
+    const { period = 'today' } = req.query;
+    
+    let query = { userId: req.user.id };
+    
+    if (period !== 'all') {
+      const dateFilter = getDateFilter(period);
+      if (dateFilter) {
+        query.createdAt = dateFilter;
+      }
+    }
+    
+    const goals = await Goal.find(query).sort({ createdAt: -1 });
     res.json(goals);
   } catch (error) {
     console.error('Error fetching goals:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get goal by ID
+exports.getGoalById = async (req, res) => {
+  try {
+    const goal = await Goal.findOne({
+      _id: req.params.id,
+      userId: req.user.id
+    });
+    
+    if (!goal) {
+      return res.status(404).json({ message: 'Goal not found' });
+    }
+    
+    res.json(goal);
+  } catch (error) {
+    console.error('Error fetching goal:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -17,7 +71,6 @@ exports.createGoal = async (req, res) => {
   try {
     const { title, current, target, unit } = req.body;
     
-    // Validation
     if (!title || current === undefined || target === undefined || !unit) {
       return res.status(400).json({
         message: 'Title, current, target, and unit are required'

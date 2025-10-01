@@ -1,5 +1,30 @@
 const Meal = require('../models/Meal');
 
+// Helper function 
+function getDateFilter(period) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  switch (period) {
+    case 'today':
+      return { $gte: today };
+    case 'week':
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return { $gte: weekAgo };
+    case 'month':
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return { $gte: monthAgo };
+    case 'year':
+      const yearAgo = new Date(today);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return { $gte: yearAgo };
+    default:
+      return null;
+  }
+}
+
 // Create meal
 exports.createMeal = async (req, res) => {
   try {
@@ -34,17 +59,21 @@ exports.createMeal = async (req, res) => {
   }
 };
 
-// Get today's meals
+// Get meals with period filter
 exports.getTodayMeals = async (req, res) => {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const { period = 'today' } = req.query;
+    
+    let query = { userId: req.user.id };
+    
+    if (period !== 'all') {
+      const dateFilter = getDateFilter(period);
+      if (dateFilter) {
+        query.date = dateFilter;
+      }
+    }
 
-    const meals = await Meal.find({
-      userId: req.user.id,
-      date: { $gte: today }
-    }).sort({ time: 1 });
-
+    const meals = await Meal.find(query).sort({ time: 1 });
     res.json(meals);
   } catch (error) {
     console.error('Error fetching meals:', error);

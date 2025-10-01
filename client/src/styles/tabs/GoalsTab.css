@@ -119,3 +119,78 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(234, 179, 8, 0.3);
 }
+
+.goal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 4px 8px;
+}
+
+.icon-btn:hover {
+  opacity: 1;
+}
+
+.icon-btn.delete:hover {
+  transform: scale(1.1);
+}
+
+.quick-update {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-input {
+  width: 80px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.save-btn, .cancel-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.save-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.save-btn:hover, .cancel-btn:hover {
+  transform: scale(1.1);
+}
+
+.goal-footer {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.progress-percentage {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+}

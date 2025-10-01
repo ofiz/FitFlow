@@ -1,16 +1,50 @@
 const Workout = require('../models/Workout');
 const mongoose = require('mongoose');
 
-// Helper function to validate ObjectId
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
+// Helper function for date filtering
+function getDateFilter(period) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  switch (period) {
+    case 'today':
+      return { $gte: today };
+    case 'week':
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return { $gte: weekAgo };
+    case 'month':
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return { $gte: monthAgo };
+    case 'year':
+      const yearAgo = new Date(today);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return { $gte: yearAgo };
+    default:
+      return null;
+  }
+}
+
 // Get all workouts
 exports.getWorkouts = async (req, res) => {
   try {
-    const workouts = await Workout.find({ userId: req.user.id })
-      .sort({ date: -1 });
+    const { period = 'today' } = req.query;
+    
+    let query = { userId: req.user.id };
+    
+    if (period !== 'all') {
+      const dateFilter = getDateFilter(period);
+      if (dateFilter) {
+        query.date = dateFilter;
+      }
+    }
+    
+    const workouts = await Workout.find(query).sort({ date: -1 });
     res.json(workouts);
   } catch (error) {
     console.error('Error fetching workouts:', error);

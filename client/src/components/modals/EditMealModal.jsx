@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import '../../styles/modals/AddMealModal.css';
 
-const AddMealModal = ({ isOpen, onClose, onSave }) => {
-  // State to store meal form data
+const EditMealModal = ({ isOpen, onClose, onSave, meal }) => {
   const [formData, setFormData] = useState({
     name: '',
     mealType: 'Breakfast',
@@ -14,7 +13,22 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
     time: ''
   });
 
-  // Handle input changes
+  useEffect(() => {
+    if (meal) {
+      setFormData({
+        name: meal.name,
+        mealType: meal.mealType,
+        calories: meal.calories,
+        protein: meal.protein || '',
+        carbs: meal.carbs || '',
+        fats: meal.fats || '',
+        time: meal.time
+      });
+    }
+  }, [meal]);
+
+  if (!isOpen) return null;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -23,41 +37,22 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
-    
-    // Reset form
-    setFormData({
-        name: '',
-        mealType: 'Breakfast',
-        calories: '',
-        protein: '',
-        carbs: '',
-        fats: '',
-        time: ''
-    });
   };
-
-  // Don't render if modal is closed
-  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header */}
         <div className="modal-header">
-          <h2>Add New Meal</h2>
+          <h2>Edit Meal</h2>
           <button className="close-btn" onClick={onClose}>
             <X size={24} />
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
-          {/* Meal name */}
           <div className="form-group">
             <label>Meal Name *</label>
             <input
@@ -70,7 +65,6 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Meal type */}
           <div className="form-group">
             <label>Meal Type *</label>
             <select
@@ -86,7 +80,6 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
             </select>
           </div>
 
-          {/* Time */}
           <div className="form-group">
             <label>Time *</label>
             <input
@@ -98,7 +91,6 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Calories */}
           <div className="form-group">
             <label>Calories *</label>
             <input
@@ -111,7 +103,6 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Macros row */}
           <div className="macros-row">
             <div className="form-group">
               <label>Protein (g)</label>
@@ -147,9 +138,8 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
             </div>
           </div>
 
-          {/* Submit button */}
           <button type="submit" className="submit-btn">
-            Save Meal
+            Save Changes
           </button>
         </form>
       </div>
@@ -157,4 +147,4 @@ const AddMealModal = ({ isOpen, onClose, onSave }) => {
   );
 };
 
-export default AddMealModal;
+export default EditMealModal;

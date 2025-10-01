@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Apple, Plus } from 'lucide-react';
 import { nutritionAPI } from '../../utils/api';
 import AddMealModal from '../modals/AddMealModal';
+import EditMealModal from '../modals/EditMealModal';
+import DateFilter from '../common/DateFilter';
 import '../../styles/tabs/NutritionTab.css';
 
 const NutritionTab = () => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMeal, setEditingMeal] = useState(null);
+  const [period, setPeriod] = useState('today');
 
   useEffect(() => {
     fetchMeals();
-  }, []);
+  }, [period]);
 
   const fetchMeals = async () => {
     try {
-      const data = await nutritionAPI.getToday();
+      const data = await nutritionAPI.getToday(period);
       setMeals(data);
     } catch (error) {
       console.error('Error fetching meals:', error);
@@ -24,25 +28,42 @@ const NutritionTab = () => {
     }
   };
 
-  // Handle saving new meal
   const handleSaveMeal = async (mealData) => {
     try {
-      console.log('Sending meal data:', mealData);
-      
-      // Call API to create meal
       await nutritionAPI.addMeal(mealData);
-      
-      // Close modal
       setIsModalOpen(false);
-      
-      // Refresh meals list
       fetchMeals();
-      
-      // Success message
       alert('Meal added successfully!');
     } catch (error) {
       console.error('Error adding meal:', error);
       alert('Failed to add meal. Please try again.');
+    }
+  };
+
+  const handleEditMeal = (meal) => {
+    setEditingMeal(meal);
+  };
+
+  const handleSaveEdit = async (updates) => {
+    try {
+      await nutritionAPI.updateMeal(editingMeal._id, updates);
+      setEditingMeal(null);
+      fetchMeals();
+    } catch (error) {
+      console.error('Error updating meal:', error);
+      alert('Failed to update meal');
+    }
+  };
+
+  const handleDeleteMeal = async (mealId) => {
+    if (window.confirm('Are you sure you want to delete this meal?')) {
+      try {
+        await nutritionAPI.deleteMeal(mealId);
+        fetchMeals();
+      } catch (error) {
+        console.error('Error deleting meal:', error);
+        alert('Failed to delete meal');
+      }
     }
   };
 
@@ -70,17 +91,18 @@ const NutritionTab = () => {
     <div className="nutrition-tab">
       <div className="tab-header">
         <h1 className="tab-title gradient-green-emerald">
-          Nutrition Tracker 🍎
+          Nutrition Tracker
         </h1>
         <p className="tab-subtitle">Track your daily meals and macros</p>
       </div>
 
-      {/* Add Meal Button */}
       <button className="add-meal-btn" onClick={() => setIsModalOpen(true)}>
         <Plus size={20} />
         Add Meal
       </button>
 
+      <DateFilter selected={period} onChange={setPeriod} />
+      
       <div className="nutrition-grid">
         <div className="nutrition-card">
           <h3 className="card-title">Today's Meals</h3>
@@ -89,10 +111,13 @@ const NutritionTab = () => {
               meals.map((meal) => (
                 <MealEntry 
                   key={meal._id}
-                  meal={meal.mealType}
+                  meal={meal}
+                  mealType={meal.mealType}
                   name={meal.name}
                   calories={meal.calories}
                   time={meal.time}
+                  onEdit={handleEditMeal}
+                  onDelete={handleDeleteMeal}
                 />
               ))
             ) : (
@@ -114,24 +139,36 @@ const NutritionTab = () => {
         </div>
       </div>
 
-      {/* Modal Component */}
       <AddMealModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveMeal}
       />
+
+      <EditMealModal 
+        isOpen={!!editingMeal}
+        onClose={() => setEditingMeal(null)}
+        onSave={handleSaveEdit}
+        meal={editingMeal}
+      />
     </div>
   );
 };
 
-const MealEntry = ({ meal, name, calories, time }) => (
+const MealEntry = ({ meal, mealType, name, calories, time, onEdit, onDelete }) => (
   <div className="meal-entry">
     <div className="meal-info">
-      <h4 className="meal-name">{meal}</h4>
+      <h4 className="meal-name">{mealType}</h4>
       <p className="meal-time">{name} - {time}</p>
     </div>
-    <div className="meal-calories">
-      <p className="calories-value">{calories} cal</p>
+    <div className="meal-actions-group">
+      <div className="meal-calories">
+        <p className="calories-value">{calories} cal</p>
+      </div>
+      <div className="meal-actions">
+        <button onClick={() => onEdit(meal)} className="icon-btn" title="Edit">✏️</button>
+        <button onClick={() => onDelete(meal._id)} className="icon-btn delete" title="Delete">🗑️</button>
+      </div>
     </div>
   </div>
 );
