@@ -125,6 +125,35 @@
   box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
 }
 
+.workout-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.workout-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 4px 8px;
+}
+
+.icon-btn:hover {
+  opacity: 1;
+}
+
+.icon-btn.delete:hover {
+  transform: scale(1.1);
+}
 
 @media (max-width: 768px) {
   .workouts-grid {

@@ -106,6 +106,40 @@ describe('Goals API Tests', () => {
     });
   });
 
+  describe('GET /api/goals/:id', () => {
+    test('Should get a single goal by ID', async () => {
+      const createResponse = await request(app)
+        .post('/api/goals')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'Single Goal',
+          current: 5,
+          target: 10,
+          unit: 'kg'
+        });
+
+      const id = createResponse.body._id;
+
+      const response = await request(app)
+        .get(`/api/goals/${id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body._id).toBe(id);
+      expect(response.body.title).toBe('Single Goal');
+    });
+
+    test('Should return 404 for non-existent goal', async () => {
+      const fakeId = '507f1f77bcf86cd799439011';
+      
+      const response = await request(app)
+        .get(`/api/goals/${fakeId}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(404);
+    });
+  });
+
   describe('PUT /api/goals/:id', () => {
     test('Should update a goal', async () => {
       const createResponse = await request(app)
@@ -129,6 +163,39 @@ describe('Goals API Tests', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.current).toBe(7);
+    });
+
+    test('Should not allow updating another user\'s goal', async () => {
+      const otherUserResponse = await request(app)
+        .post('/api/auth/register')
+        .send({
+          name: 'Other User',
+          email: 'othergoals@example.com',
+          password: 'password123'
+        });
+
+      const otherToken = otherUserResponse.body.token;
+
+      const createResponse = await request(app)
+        .post('/api/goals')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'My Goal',
+          current: 5,
+          target: 10,
+          unit: 'kg'
+        });
+
+      const goalId = createResponse.body._id;
+
+      const response = await request(app)
+        .put(`/api/goals/${goalId}`)
+        .set('Authorization', `Bearer ${otherToken}`)
+        .send({
+          current: 8
+        });
+
+      expect(response.status).toBe(404);
     });
   });
 

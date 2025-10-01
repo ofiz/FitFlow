@@ -52,9 +52,18 @@ export const dashboardAPI = {
   getStats: () => apiCall('/dashboard/stats'),
 };
 
+// Goals API calls
+export const goalsAPI = {
+  getAll: (period = 'today') => apiCall(`/goals?period=${period}`),
+  getById: (id) => apiCall(`/goals/${id}`),
+  create: (data) => apiCall('/goals', 'POST', data),
+  update: (id, data) => apiCall(`/goals/${id}`, 'PUT', data),
+  delete: (id) => apiCall(`/goals/${id}`, 'DELETE'),
+};
+
 // Workouts API calls
 export const workoutsAPI = {
-  getAll: () => apiCall('/workouts'),
+  getAll: (period = 'today') => apiCall(`/workouts?period=${period}`),
   getById: (id) => apiCall(`/workouts/${id}`),
   create: (data) => apiCall('/workouts', 'POST', data),
   update: (id, data) => apiCall(`/workouts/${id}`, 'PUT', data),
@@ -63,17 +72,9 @@ export const workoutsAPI = {
 
 // Nutrition API calls
 export const nutritionAPI = {
-  getToday: () => apiCall('/nutrition/today'),
+  getToday: (period = 'today') => apiCall(`/nutrition/today?period=${period}`),
   getByDate: (date) => apiCall(`/nutrition/date/${date}`),
   addMeal: (data) => apiCall('/nutrition/meals', 'POST', data),
   updateMeal: (id, data) => apiCall(`/nutrition/meals/${id}`, 'PUT', data),
   deleteMeal: (id) => apiCall(`/nutrition/meals/${id}`, 'DELETE'),
-};
-
-// Goals API calls
-export const goalsAPI = {
-  getAll: () => apiCall('/goals'),
-  create: (data) => apiCall('/goals', 'POST', data),
-  update: (id, data) => apiCall(`/goals/${id}`, 'PUT', data),
-  delete: (id) => apiCall(`/goals/${id}`, 'DELETE'),
 };

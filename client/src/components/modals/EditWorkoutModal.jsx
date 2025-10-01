@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import '../../styles/modals/AddWorkoutModal.css';
 
-const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
-  // State to store form data
+const EditWorkoutModal = ({ isOpen, onClose, onSave, workout }) => {
   const [formData, setFormData] = useState({
     title: '',
     duration: '',
@@ -11,50 +10,43 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
     notes: ''
   });
 
-  // Handle input changes
+  useEffect(() => {
+    if (workout) {
+      setFormData({
+        title: workout.title,
+        duration: workout.duration,
+        difficulty: workout.difficulty || 'Intermediate',
+        notes: workout.notes || ''
+      });
+    }
+  }, [workout]);
+
+  if (!isOpen) return null;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Update only the changed field, keep the rest
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
-    
-    // Reset form
-    setFormData({
-        title: '',
-        duration: '',
-        difficulty: 'Intermediate',
-        notes: ''
-    });
   };
 
-  // Don't render if modal is closed
-  if (!isOpen) return null;
-
   return (
-    // Overlay - clicking it closes the modal
     <div className="modal-overlay" onClick={onClose}>
-      {/* Modal content - stop click propagation so clicking inside doesn't close */}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header */}
         <div className="modal-header">
-          <h2>Add New Workout</h2>
+          <h2>Edit Workout</h2>
           <button className="close-btn" onClick={onClose}>
             <X size={24} />
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
-          {/* Title input */}
           <div className="form-group">
             <label>Workout Title *</label>
             <input
@@ -67,7 +59,6 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Duration input */}
           <div className="form-group">
             <label>Duration (minutes) *</label>
             <input
@@ -80,7 +71,6 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Difficulty select */}
           <div className="form-group">
             <label>Difficulty</label>
             <select
@@ -94,7 +84,6 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
             </select>
           </div>
 
-          {/* Notes textarea */}
           <div className="form-group">
             <label>Notes (optional)</label>
             <textarea
@@ -106,9 +95,8 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
             />
           </div>
 
-          {/* Submit button */}
           <button type="submit" className="submit-btn">
-            Save Workout
+            Save Changes
           </button>
         </form>
       </div>
@@ -116,4 +104,4 @@ const AddWorkoutModal = ({ isOpen, onClose, onSave }) => {
   );
 };
 
-export default AddWorkoutModal;
+export default EditWorkoutModal;
