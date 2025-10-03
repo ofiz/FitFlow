@@ -1,7 +1,8 @@
 // src/components/Dashboard.jsx
-import React, { useState , useEffect } from 'react';
-import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X } from 'lucide-react';
-import { userAPI } from '../utils/api';
+import React, { useState, useEffect } from 'react';
+import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { userAPI, authAPI } from '../utils/api';
 import '../styles/components/Dashboard.css';
 
 // Import sub-components
@@ -17,6 +18,7 @@ import AICoachTab from '../components/tabs/AICoachTab';
 import ProfileTab from '../components/tabs/ProfileTab';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userData, setUserData] = useState({ name: '', email: '' });
@@ -31,6 +33,19 @@ const Dashboard = () => {
       setUserData(data);
     } catch (error) {
       console.error('Error fetching user:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+      localStorage.removeItem('token');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API fails, clear local storage and redirect
+      localStorage.removeItem('token');
+      navigate('/login');
     }
   };
 
@@ -104,19 +119,25 @@ const Dashboard = () => {
         </nav>
 
         {/* User Section */}
-          <div className="sidebar-footer">
-            <div className={`user-info ${!sidebarOpen ? 'collapsed' : ''}`}>
-              <div className="user-avatar">
-                {userData.name ? userData.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
-              </div>
-              {sidebarOpen && (
-                <div className="user-details">
-                  <div className="user-name">{userData.name || 'User'}</div>
-                  <div className="user-status">Premium Member</div>
-                </div>
-              )}
+        <div className="sidebar-footer">
+          <div className={`user-info ${!sidebarOpen ? 'collapsed' : ''}`}>
+            <div className="user-avatar">
+              {userData.name ? userData.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
             </div>
+            {sidebarOpen && (
+              <div className="user-details">
+                <div className="user-name">{userData.name || 'User'}</div>
+                <div className="user-status">Premium Member</div>
+              </div>
+            )}
           </div>
+          {sidebarOpen && (
+            <button onClick={handleLogout} className="logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          )}
+        </div>
       </aside>
 
       {/* Main Content */}

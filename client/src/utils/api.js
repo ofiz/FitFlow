@@ -41,6 +41,13 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   return data;
 };
 
+// Auth API calls
+export const authAPI = {
+  login: (credentials) => apiCall('/auth/login', 'POST', credentials),
+  register: (userData) => apiCall('/auth/register', 'POST', userData),
+  logout: () => apiCall('/auth/logout', 'POST'),
+};
+
 // User API calls
 export const userAPI = {
   getProfile: () => apiCall('/user/profile'),
