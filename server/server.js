@@ -23,6 +23,8 @@ const workoutsRoutes = require('./routes/workouts');
 const nutritionRoutes = require('./routes/nutrition');
 const goalsRoutes = require('./routes/goals');
 const userRoutes = require('./routes/user');
+const progressRoutes = require('./routes/progress'); 
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -30,6 +32,8 @@ app.use('/api/workouts', workoutsRoutes);
 app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/goals', goalsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/progress', progressRoutes); 
+app.use('/uploads', express.static('uploads')); 
 
 // Test route
 app.get('/api/test', (req, res) => {
