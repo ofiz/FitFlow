@@ -22,10 +22,22 @@ function calculateTDEE(bmr, activityLevel) {
   return Math.round(bmr * multipliers[activityLevel]);
 }
 
+function adjustCaloriesForGoal(tdee, generalGoal) {
+  switch(generalGoal) {
+    case 'gain_mass':
+      return tdee + 600;  // Add 600 calories for mass gain
+    case 'lose_fat':
+      return tdee - 450;  // Subtract 450 calories for fat loss
+    case 'maintenance':
+    default:
+      return tdee;        // No adjustment for maintenance
+  }
+}
+
 // Calculate calories
 exports.calculate = async (req, res) => {
   try {
-    const { age, weight, height, gender, activityLevel } = req.body;
+    const { age, weight, height, gender, activityLevel, generalGoal } = req.body; // ✏️ MODIFIED: Added generalGoal
     
     // Validation
     if (!age || !weight || !height || !gender || !activityLevel) {
@@ -55,7 +67,8 @@ exports.calculate = async (req, res) => {
 
     // Calculate BMR and TDEE
     const bmr = Math.round(calculateBMR(weight, height, age, gender));
-    const tdee = calculateTDEE(bmr, activityLevel);
+    const baseTdee = calculateTDEE(bmr, activityLevel); 
+    const tdee = adjustCaloriesForGoal(baseTdee, generalGoal || 'maintenance'); 
 
     // Save calculation history
     const calculation = new CalculatorResult({
@@ -65,6 +78,7 @@ exports.calculate = async (req, res) => {
       height,
       gender,
       activityLevel,
+      generalGoal: generalGoal || 'maintenance',
       bmr,
       tdee
     });

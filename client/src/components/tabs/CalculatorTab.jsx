@@ -9,7 +9,8 @@ const CalculatorTab = () => {
     weight: '',
     height: '',
     gender: 'male',
-    activityLevel: 'moderately'
+    activityLevel: 'moderately',
+    generalGoal: 'maintenance'
   });
   
   const [result, setResult] = useState(null);
@@ -51,7 +52,8 @@ const CalculatorTab = () => {
         weight: Number(formData.weight),
         height: Number(formData.height),
         gender: formData.gender,
-        activityLevel: formData.activityLevel
+        activityLevel: formData.activityLevel,
+        generalGoal: formData.generalGoal
       });
       
       setResult(data);
@@ -79,6 +81,12 @@ const CalculatorTab = () => {
     moderately: 'Moderately Active',
     very: 'Very Active',
     extremely: 'Extremely Active'
+  };
+
+  const generalGoalLabels = {
+    maintenance: 'Maintenance',
+    gain_mass: 'Gain Mass',
+    lose_fat: 'Lose Fat'
   };
 
   return (
@@ -149,6 +157,20 @@ const CalculatorTab = () => {
             </select>
           </div>
 
+          <div className="form-group">
+            <label className="form-label">General Goal</label>
+            <select 
+              className="form-select"
+              name="generalGoal"
+              value={formData.generalGoal}
+              onChange={handleChange}
+            >
+              <option value="maintenance">Maintenance</option>
+              <option value="gain_mass">Gain Mass</option>
+              <option value="lose_fat">Lose Fat</option>
+            </select>
+          </div>
+
           {error && (
             <div style={{ 
               color: '#ef4444', 
@@ -208,6 +230,7 @@ const CalculatorTab = () => {
                         Age: {calc.age} | Weight: {calc.weight}kg | Height: {calc.height}cm | 
                         {calc.gender === 'male' ? ' Male' : ' Female'} | 
                         {activityLevelLabels[calc.activityLevel]}
+                        {calc.generalGoal && ` | ${generalGoalLabels[calc.generalGoal]}`}
                       </div>
                       <div className="history-results">
                         <span>BMR: <strong>{calc.bmr}</strong></span>
