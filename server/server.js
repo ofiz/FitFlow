@@ -24,6 +24,10 @@ const nutritionRoutes = require('./routes/nutrition');
 const goalsRoutes = require('./routes/goals');
 const userRoutes = require('./routes/user');
 const calculatorRoutes = require('./routes/calculator');
+const progressRoutes = require('./routes/progress');
+
+// Health check route (must be first, before other routes)
+app.use('/api/test', require('./routes/test'));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -32,14 +36,8 @@ app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/goals', goalsRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/calculator', calculatorRoutes);
-
-// Health check route
-app.use('/api/test', require('./routes/test'));
-
-// Test route
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Server is working!' });
-});
+app.use('/api/progress', progressRoutes);
+app.use('/uploads', express.static('uploads'));
 
 // Export app for testing
 module.exports = app;
