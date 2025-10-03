@@ -23,6 +23,7 @@ const workoutsRoutes = require('./routes/workouts');
 const nutritionRoutes = require('./routes/nutrition');
 const goalsRoutes = require('./routes/goals');
 const userRoutes = require('./routes/user');
+const calculatorRoutes = require('./routes/calculator');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -30,6 +31,10 @@ app.use('/api/workouts', workoutsRoutes);
 app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/goals', goalsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/calculator', calculatorRoutes);
+
+// Health check route
+app.use('/api/test', require('./routes/test'));
 
 // Test route
 app.get('/api/test', (req, res) => {
