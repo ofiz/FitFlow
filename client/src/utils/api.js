@@ -91,3 +91,11 @@ export const calculatorAPI = {
   calculate: (data) => apiCall('/calculator/calculate', 'POST', data),
   getHistory: () => apiCall('/calculator/history'),
 };
+
+// Trivia API calls
+export const triviaAPI = {
+  getQuestion: (params) => apiCall(`/trivia/question${params ? `?${new URLSearchParams(params)}` : ''}`, 'GET'),
+  submitAnswer: (data) => apiCall('/trivia/answer', 'POST', data),
+  getStats: () => apiCall('/trivia/stats'),
+  seedQuestions: () => apiCall('/trivia/seed', 'POST'),
+};

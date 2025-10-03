@@ -25,6 +25,7 @@ const goalsRoutes = require('./routes/goals');
 const userRoutes = require('./routes/user');
 const calculatorRoutes = require('./routes/calculator');
 const progressRoutes = require('./routes/progress');
+const triviaRoutes = require('./routes/trivia');
 
 // Health check route
 app.use('/api/test', require('./routes/healthcheck'));
@@ -38,6 +39,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/calculator', calculatorRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/api/trivia', triviaRoutes);
 
 // Export app for testing
 module.exports = app;
@@ -48,4 +50,27 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+}
+
+// Connect to MongoDB only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(async () => {
+      console.log('Connected to MongoDB');
+      
+      // Auto-seed trivia questions if none exist
+      const TriviaQuestion = require('./models/TriviaQuestion');
+      const count = await TriviaQuestion.countDocuments();
+      
+      if (count === 0) {
+        console.log('No trivia questions found. Seeding 20 questions...');
+        const triviaController = require('./controllers/triviaController');
+        
+        await triviaController.seedQuestions(
+          {}, 
+          { json: (data) => console.log(data.message) }
+        );
+      }
+    })
+    .catch(err => console.log('MongoDB connection error:', err));
 }
