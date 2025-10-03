@@ -150,7 +150,26 @@ const GoalsTab = () => {
 const GoalCard = ({ goalId, goalData, goal, current, target, unit, color, onUpdate, onDelete, onEdit }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newCurrent, setNewCurrent] = useState(current);
-  const progress = (current / target) * 100;
+  
+  const initial = goalData.initial || goalData.current; // fallback למטרות ישנות
+  
+  // Determine if going up or down
+  const isDecreaseGoal = initial > target;
+  
+  let progress;
+  let displayText;
+  
+  if (isDecreaseGoal) {
+    // Weight loss: show how much lost / how much to lose
+    const totalToLose = initial - target;
+    const alreadyLost = initial - current;
+    progress = (alreadyLost / totalToLose) * 100;
+    displayText = `${current}/${target} ${unit} (Lost: ${alreadyLost.toFixed(1)} ${unit})`;
+  } else {
+    // Regular goal: show current / target
+    progress = (current / target) * 100;
+    displayText = `${current}/${target} ${unit}`;
+  }
   
   const handleQuickUpdate = async () => {
     if (newCurrent !== current) {
@@ -171,15 +190,14 @@ const GoalCard = ({ goalId, goalData, goal, current, target, unit, color, onUpda
                 value={newCurrent}
                 onChange={(e) => setNewCurrent(e.target.value)}
                 className="progress-input"
+                step="0.1"
               />
               <button onClick={handleQuickUpdate} className="save-btn">✓</button>
               <button onClick={() => setIsEditing(false)} className="cancel-btn">✕</button>
             </div>
           ) : (
             <>
-              <span className="goal-progress-text">
-                {current}/{target} {unit}
-              </span>
+              <span className="goal-progress-text">{displayText}</span>
               <button onClick={() => onEdit(goalData)} className="icon-btn" title="Edit Goal">⚙️</button>
               <button onClick={() => setIsEditing(true)} className="icon-btn" title="Quick Update">✏️</button>
               <button onClick={() => onDelete(goalId)} className="icon-btn delete" title="Delete">🗑️</button>
@@ -190,7 +208,7 @@ const GoalCard = ({ goalId, goalData, goal, current, target, unit, color, onUpda
       <div className="goal-progress-bar">
         <div 
           className={`goal-progress-fill goal-${color}`}
-          style={{ width: `${Math.min(progress, 100)}%` }}
+          style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
         />
       </div>
       <div className="goal-footer">
