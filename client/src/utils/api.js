@@ -78,3 +78,9 @@ export const nutritionAPI = {
   updateMeal: (id, data) => apiCall(`/nutrition/meals/${id}`, 'PUT', data),
   deleteMeal: (id) => apiCall(`/nutrition/meals/${id}`, 'DELETE'),
 };
+
+// Calculator API calls
+export const calculatorAPI = {
+  calculate: (data) => apiCall('/calculator/calculate', 'POST', data),
+  getHistory: () => apiCall('/calculator/history'),
+};
