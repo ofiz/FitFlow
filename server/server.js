@@ -26,8 +26,8 @@ const userRoutes = require('./routes/user');
 const calculatorRoutes = require('./routes/calculator');
 const progressRoutes = require('./routes/progress');
 
-// Health check route (must be first, before other routes)
-app.use('/api/test', require('./routes/test'));
+// Health check route
+app.use('/api/test', require('./routes/healthcheck'));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
