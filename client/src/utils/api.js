@@ -12,6 +12,15 @@ const getToken = () => {
   return localStorage.getItem('token');
 };
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = getToken();
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+};
+
 // Generic API call function
 const apiCall = async (endpoint, method = 'GET', body = null) => {
   const token = getToken();
@@ -48,10 +57,73 @@ export const authAPI = {
   logout: () => apiCall('/auth/logout', 'POST'),
 };
 
-// User API calls
+// User API
 export const userAPI = {
-  getProfile: () => apiCall('/user/profile'),
-  updateProfile: (data) => apiCall('/user/profile', 'PUT', data),
+  getProfile: async () => {
+    const response = await fetch(`${API_URL}/user/profile`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch profile');
+    return response.json();
+  },
+
+  updateProfile: async (data) => {
+    const response = await fetch(`${API_URL}/user/profile`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to update profile');
+    return response.json();
+  },
+
+  getStats: async () => {
+    const response = await fetch(`${API_URL}/user/stats`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch stats');
+    return response.json();
+  },
+  
+  changePassword: async (data) => {
+    const response = await fetch(`${API_URL}/user/change-password`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw { response: { data: error } };
+    }
+    return response.json();
+  }
+};
+
+// Analytics API
+export const analyticsAPI = {
+  getWorkoutStats: async (period = 'week') => {
+    const response = await fetch(`${API_URL}/analytics/workouts?period=${period}`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch workout stats');
+    return response.json();
+  },
+
+  getNutritionStats: async (period = 'week') => {
+    const response = await fetch(`${API_URL}/analytics/nutrition?period=${period}`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch nutrition stats');
+    return response.json();
+  },
+
+  getOverview: async () => {
+    const response = await fetch(`${API_URL}/analytics/overview`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch analytics overview');
+    return response.json();
+  }
 };
 
 // Dashboard API calls
