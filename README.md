@@ -149,6 +149,22 @@ MISTRAL_API_KEY=your-mistral-api-key-here
 - `your-secret-key-here` with a strong random string (32+ characters)
 - `your-mistral-api-key-here` with your Mistral AI API key (see below)
 
+## GitHub Actions — Create Secrets before running CI/CD
+
+Before running the pipeline, create repository **Secrets** so tests/builds don’t fail.
+
+### How to add Secrets
+1. Go to **GitHub → Your repository → Settings → Secrets and variables → Actions**  
+2. Under **Repository secrets**, click **New repository secret**  
+3. Enter a **Name** and **Value**, then click **Add secret**
+
+### Required Secrets (for CI tests / build & push)
+- `JWT_SECRET` — a long random string (used by JWT in tests/runtime)
+- `JWT_EXPIRE` — e.g. `30d` *(optional; only if your tests depend on it)*
+- `DOCKER_USERNAME` — your Docker Hub username (for image push)
+- `DOCKER_PASSWORD` — Docker Hub token/password
+- `MISTRAL_API_KEY` — Mistral AI API key  
+
 ### 3. Run with Docker (Recommended)
 
 ```bash
