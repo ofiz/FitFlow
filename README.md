@@ -1,315 +1,408 @@
-# FitFlow - Your Ultimate Fitness Platform
+# FitFlow - Comprehensive Fitness Tracking Application
 
-## 📋 Project Overview
-FitFlow is a full-stack web application for fitness tracking, training, and nutrition management built with React and Node.js.
+A full-stack fitness tracking platform that helps users monitor their nutrition, workouts, progress photos, and fitness goals with advanced analytics and an AI-powered coach.
 
-## 🛠️ Tech Stack
+## Features
 
-### Frontend (Client)
-- **React** 18.2.0
-- **Vite** 5.0.0 (Build tool)
-- **React Router DOM** 6.20.0 (Navigation)
-- **Axios** (HTTP requests)
+### Core Features
+- **Dashboard Overview** - Real-time fitness summary with key metrics
+- **Workout Tracking** - Log exercises, duration, difficulty, and track workout history
+- **Nutrition Tracker** - Track daily meals, calories, and macronutrient breakdown (protein, carbs, fats)
+- **Progress Gallery** - Upload and visualize transformation photos over time
+- **Goals Management** - Set and track fitness milestones with progress bars
+- **Analytics & Stats** - Comprehensive charts and insights (workout frequency, calorie intake, macros breakdown, duration trends)
+- **BMR/TDEE Calculator** - Calculate daily calorie needs based on personal metrics
+- **Nutrition Trivia** - Test your nutrition knowledge with an interactive quiz game
+- **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7
+- **Profile Management** - Update personal information, fitness goals, and change password
 
-### Backend (Server)
-- **Node.js** with **Express** 4.21.2
-- **MongoDB** with **Mongoose** 7.8.7 (Database)
-- **bcryptjs** 2.4.3 (Password hashing)
-- **JWT** (Authentication - jsonwebtoken 9.0.2)
-- **CORS** 2.8.5 (Cross-origin requests)
+### Technical Features
+- JWT-based authentication with secure password handling
+- Responsive design optimized for mobile and desktop
+- RESTful API architecture
+- Comprehensive test coverage (90 tests)
+- Docker containerization for easy deployment
+- Date filtering (Today/Week/Month/Year) across all tracking features
 
-### Database
-- **MongoDB Atlas** (Cloud database)
+## Tech Stack
 
----
+### Frontend
+- **React** 18 with Vite
+- **Recharts** for data visualization
+- **Lucide React** for icons
+- **CSS3** with modern glassmorphism design
+- **Nginx** for production serving
 
-## 🚀 Installation & Setup
+### Backend
+- **Node.js** with Express.js
+- **MongoDB** with Mongoose ODM
+- **JWT** for authentication
+- **Bcrypt** for password hashing
+- **Jest** & Supertest for testing
+- **Multer** for file uploads
 
-### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB Atlas account
-- Git
+### DevOps
+- **Docker** & Docker Compose
+- **Nginx** reverse proxy
+- Multi-stage builds for optimization
 
-### 1. Clone Repository
+## Project Structure
+
+```
+FitFlow/
+├── client/                      # Frontend React application
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/          # Reusable components (DateFilter, etc.)
+│   │   │   ├── modals/          # Add/Edit modals (Meal, Workout, Goal)
+│   │   │   └── tabs/            # Main feature tabs (8 tabs)
+│   │   ├── pages/
+│   │   │   ├── Auth/            # Login & Register
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── Home.jsx
+│   │   ├── styles/              # CSS files
+│   │   └── utils/               # API calls, auth helpers
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+│
+├── server/                      # Backend Node.js application
+│   ├── config/                  # Database configuration
+│   ├── controllers/             # Business logic (9 controllers)
+│   │   ├── analyticsController.js
+│   │   ├── authController.js
+│   │   ├── calculatorController.js
+│   │   ├── dashboardController.js
+│   │   ├── goalController.js
+│   │   ├── nutritionController.js
+│   │   ├── progressController.js
+│   │   ├── triviaController.js
+│   │   ├── userController.js
+│   │   └── workoutController.js
+│   ├── middleware/              # Auth, error handling, validation
+│   ├── models/                  # Mongoose schemas (9 models)
+│   │   ├── Calculator.js
+│   │   ├── Goal.js
+│   │   ├── Meal.js
+│   │   ├── Progress.js
+│   │   ├── TriviaQuestion.js
+│   │   ├── TriviaScore.js
+│   │   ├── User.js
+│   │   └── Workout.js
+│   ├── routes/                  # API endpoints (10 route files)
+│   ├── tests/                   # Jest test suites (9 test files)
+│   │   └── api/
+│   │       ├── analytics.test.js
+│   │       ├── auth.test.js
+│   │       ├── calculator.test.js
+│   │       ├── dashboard.test.js
+│   │       ├── goals.test.js
+│   │       ├── nutrition.test.js
+│   │       ├── progress.test.js
+│   │       ├── trivia.test.js
+│   │       ├── user.test.js
+│   │       └── workouts.test.js
+│   ├── uploads/                 # User uploaded files
+│   ├── .env.example
+│   ├── Dockerfile
+│   ├── package.json
+│   └── server.js
+│
+├── docker-compose.yml
+└── README.md
+```
+
+## Prerequisites
+
+- **Node.js** 18+ 
+- **Docker** & Docker Compose
+- **MongoDB Atlas** account (or local MongoDB)
+
+## Installation & Setup
+
+### 1. Clone the Repository
+
 ```bash
-git clone <repository-url>
+git clone https://github.com/yourusername/fitflow.git
 cd fitflow
 ```
 
-### 2. Install Dependencies
+### 2. Environment Variables
 
-#### Root Level
-```bash
-npm install concurrently --save-dev
-```
+Create a `.env` file in the `server/` directory:
 
-#### Client Setup
-```bash
-cd client
-npm install vite @vitejs/plugin-react react react-dom react-router-dom axios
-npm install --save-dev @types/react @types/react-dom
-```
-
-#### Server Setup
-```bash
-cd ../server
-npm install express mongoose bcryptjs jsonwebtoken cors helmet express-rate-limit dotenv joi multer cloudinary
-npm install --save-dev nodemon
-```
-
-### 3. Environment Configuration
-
-#### Create `server/.env`
 ```env
+NODE_ENV=development
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/fitflow?retryWrites=true&w=majority
-JWT_SECRET=your-super-secret-jwt-key-here
+JWT_SECRET=your-secret-key-here-min-32-characters
+JWT_EXPIRE=30d
 PORT=5000
 ```
 
-#### Replace in MONGODB_URI:
-- `username` → Your MongoDB Atlas username
-- `password` → Your MongoDB Atlas password
-- `cluster` → Your actual cluster name
+**Replace:**
+- `username:password` with your MongoDB Atlas credentials
+- `your-secret-key-here` with a strong random string (32+ characters)
 
-### 4. MongoDB Atlas Setup
+### 3. Run with Docker (Recommended)
 
-1. Create account at [MongoDB Atlas](https://cloud.mongodb.com)
-2. Create new project: **FitFlow**
-3. Create cluster: **fitflow-cluster**
-4. Setup Database Access:
-   - Username: `fitflow-admin`
-   - Strong password
-5. Setup Network Access:
-   - Add IP: `0.0.0.0/0` (for development)
-6. Get connection string from **Connect → Drivers**
-
----
-
-## 🏃‍♂️ Running the Application
-
-### Development Mode
-
-#### Option 1: Run Both (Recommended)
 ```bash
-# From root directory
-npm run dev
+# Build and start all services
+docker-compose up --build
+
+# Run in detached mode
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
 ```
 
-#### Option 2: Run Separately
+The application will be available at:
+- **Frontend:** http://localhost
+- **Backend API:** http://localhost:5000
+
+### 4. Run Locally (Without Docker)
+
+#### Backend Setup
 ```bash
-# Terminal 1 - Server
 cd server
-npm run dev
-
-# Terminal 2 - Client  
-cd client
+npm install
 npm run dev
 ```
 
-### Production Mode
+#### Frontend Setup
 ```bash
-# Build client
 cd client
-npm run build
-
-# Start server
-cd ../server
-npm start
+npm install
+npm run dev
 ```
 
----
+## Running Tests
 
-## 📁 Project Structure
-
-```
-fitflow/
-├── client/                     # Frontend (React + Vite)
-│   ├── public/
-│   │   └── images/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   └── Auth/
-│   │   │       ├── Login.jsx
-│   │   │       └── Register.jsx
-│   │   ├── styles/
-│   │   │   └── components/
-│   │   │       ├── Home.css
-│   │   │       └── Register.css
-│   │   ├── utils/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── server/                     # Backend (Node.js + Express)
-│   ├── config/
-│   │   └── database.js
-│   ├── controllers/
-│   │   └── authController.js
-│   ├── middleware/
-│   │   ├── auth.js
-│   │   └── validation.js
-│   ├── models/
-│   │   └── User.js
-│   ├── routes/
-│   │   └── auth.js
-│   ├── utils/
-│   ├── .env
-│   ├── server.js
-│   └── package.json
-├── shared/
-│   └── constants.js
-├── .gitignore
-├── README.md
-└── package.json                # Root package.json (scripts)
-```
-
----
-
-## 🔧 Package Scripts
-
-### Root Level
 ```bash
-npm run dev          # Run both client and server
-npm run client:dev   # Run only client
-npm run server:dev   # Run only server
-npm run install:all  # Install all dependencies
+cd server
+
+# Run all tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- auth.test.js
 ```
 
-### Client
-```bash
-npm run dev          # Development server (http://localhost:3000)
-npm run build        # Build for production
-npm run preview      # Preview production build
-```
+**Test Coverage:**
+- 90 comprehensive tests across all API endpoints
+- Authentication, CRUD operations, analytics, calculations
+- Edge cases and error handling
 
-### Server
-```bash
-npm run dev          # Development with nodemon
-npm start            # Production server
-```
-
----
-
-## ✨ Current Features
-
-### Authentication System
-- ✅ User registration with validation
-- ✅ Password encryption (bcrypt)
-- ✅ Email uniqueness check
-- ✅ Form validation (client & server)
-- ✅ Custom alert system
-- ✅ Responsive design
-
-### Database Models
-- ✅ User model with MongoDB schema
-- ✅ Automatic timestamps
-- ✅ Data validation
-
-### Frontend
-- ✅ Modern React with hooks
-- ✅ React Router navigation
-- ✅ Responsive design with glassmorphism
-- ✅ Form state management
-- ✅ Custom CSS animations
-
----
-
-## 🎯 Upcoming Features
-
-- [ ] User login system
-- [ ] JWT authentication middleware
-- [ ] Dashboard with user stats
-- [ ] Workout tracking
-- [ ] Nutrition logging
-- [ ] Progress photos
-- [ ] Goal setting
-- [ ] AI fitness coach integration
-
----
-
-## 🌐 API Endpoints
+## API Documentation
 
 ### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login (coming soon)
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
 
-### User Management
-- `GET /api/users/profile` - Get user profile (coming soon)
-- `PUT /api/users/profile` - Update profile (coming soon)
+### User
+- `GET /api/user/profile` - Get user profile
+- `PUT /api/user/profile` - Update profile
+- `GET /api/user/stats` - Get user statistics (BMI, weight progress)
+- `PUT /api/user/change-password` - Change password
 
----
+### Workouts
+- `GET /api/workouts?period=week` - Get workouts (filtered by period)
+- `POST /api/workouts` - Create workout
+- `PUT /api/workouts/:id` - Update workout
+- `DELETE /api/workouts/:id` - Delete workout
 
-## 🔒 Security Features
+### Nutrition
+- `GET /api/nutrition/today?period=week` - Get meals (filtered by period)
+- `POST /api/nutrition/meals` - Add meal
+- `PUT /api/nutrition/meals/:id` - Update meal
+- `DELETE /api/nutrition/meals/:id` - Delete meal
 
-- Password hashing with bcrypt (salt rounds: 12)
-- Input validation and sanitization
-- CORS protection
-- Rate limiting
-- Environment variables for sensitive data
-- MongoDB injection prevention
+### Goals
+- `GET /api/goals?period=week` - Get goals
+- `POST /api/goals` - Create goal
+- `PUT /api/goals/:id` - Update goal
+- `DELETE /api/goals/:id` - Delete goal
 
----
+### Analytics
+- `GET /api/analytics/workouts?period=week` - Workout statistics
+- `GET /api/analytics/nutrition?period=week` - Nutrition statistics
+- `GET /api/analytics/overview` - Dashboard overview stats
 
-## 📱 Browser Support
+### Progress Photos
+- `POST /api/progress/upload` - Upload progress photo
+- `GET /api/progress/photos` - Get all photos
+- `DELETE /api/progress/photos/:id` - Delete photo
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+### Trivia
+- `GET /api/trivia/question` - Get random question
+- `POST /api/trivia/answer` - Submit answer
+- `GET /api/trivia/stats` - Get trivia statistics
 
----
+### Calculator
+- `POST /api/calculator/calculate` - Calculate BMR/TDEE
+- `GET /api/calculator/history` - Get calculation history
 
-## 🤝 Contributing
+### Dashboard
+- `GET /api/dashboard/stats` - Get dashboard statistics
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+## User Guide
 
----
+### Getting Started
+1. **Register** - Create an account with name, email, and password
+2. **Complete Profile** - Add weight, height, age, and fitness goals
+3. **Start Tracking** - Log your first workout or meal
+4. **Monitor Progress** - Upload progress photos and track your journey
 
-## 📝 Development Notes
+### Key Features Usage
 
-### Password Requirements
+#### Dashboard
+View your daily summary including:
+- Workouts this week
+- Calories consumed today
+- Current weight & BMI
+- Active streak
+
+#### Workouts
+- Click "Add Workout" to log exercises
+- Set duration, difficulty, and add notes
+- Filter by Today/Week/Month/Year
+- Edit or delete past workouts
+
+#### Nutrition
+- Track meals by type (Breakfast, Lunch, Dinner, Snack)
+- Log calories and macros (protein, carbs, fats)
+- View visual breakdown of daily macros
+- Filter history by date range
+
+#### Analytics
+- View 4 interactive charts:
+  - Workout Frequency (bar chart)
+  - Calorie Intake (line chart)
+  - Macros Breakdown (stacked bars)
+  - Workout Duration Trend (line chart)
+- Filter by Today/Week/Month/Year
+- Get actionable insights from your data
+
+#### Goals
+- Set measurable fitness goals
+- Track progress with visual bars
+- Update current values as you progress
+- Celebrate milestones
+
+#### Profile
+- Update personal information
+- Change password securely
+- Set daily calorie goals
+- Configure activity level
+
+## Password Requirements
+
+Passwords must contain:
 - Minimum 8 characters
 - At least one uppercase letter
 - At least one lowercase letter
 - At least one number
 - At least one special character (@$!%*?&)
 
-### Database Schema
-```javascript
-User {
-  _id: ObjectId (auto-generated)
-  name: String (required, trimmed)
-  email: String (required, unique, lowercase)
-  password: String (required, hashed)
-  createdAt: Date (auto-generated)
-}
+## Docker Configuration
+
+### Services
+- **server** - Node.js backend (port 5000)
+- **client** - Nginx serving React app (port 80)
+
+### Volumes
+- `./server/uploads` - Persistent storage for uploaded photos
+
+### Health Checks
+- Server health check runs every 30 seconds
+- Client depends on server health
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Write tests for new features
+- Follow existing code style
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
+
+## Testing
+
+Run the test suite before committing:
+
+```bash
+cd server
+npm test
 ```
 
----
+Expected output: **90 tests passing** across:
+- Authentication (6 tests)
+- User management (16 tests)
+- Workouts (15 tests)
+- Nutrition (11 tests)
+- Goals (10 tests)
+- Analytics (11 tests)
+- Progress photos (13 tests)
+- Trivia (5 tests)
+- Calculator (8 tests)
+- Dashboard (4 tests)
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
-1. **MongoDB Connection Failed**
-   - Check MONGODB_URI in .env
-   - Verify Atlas Network Access settings
-   - Ensure correct username/password
+**MongoDB Connection Failed**
+- Verify MONGODB_URI in `.env`
+- Check MongoDB Atlas IP whitelist
+- Ensure network connectivity
 
-2. **CORS Errors**
-   - Verify server CORS configuration
-   - Check client/server ports
+**Docker Build Fails**
+- Clear Docker cache: `docker-compose build --no-cache`
+- Check Docker daemon is running
+- Verify Docker Compose version
 
-3. **React Double Alerts**
-   - Remove React.StrictMode for development
-   - Or implement alert deduplication
+**Tests Failing**
+- Ensure MongoDB test database is accessible
+- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Check Node.js version (18+)
 
+**Frontend Not Loading**
+- Check if server is running (port 5000)
+- Verify CORS configuration
+- Clear browser cache
 
+## License
 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Authors
+
+**Lir Chen**  
+[GitHub](https://github.com/lirchen) • [Email](mailto:lirhen2000@gmail.com)
+
+**Ofir Cohen**  
+[GitHub](https://github.com/ofiz) • [Email](mailto:ofircohen599@gmail.com)
+
+## Acknowledgments
+
+- Nutrition data powered by comprehensive nutritional databases
+- Icons by Lucide React
+- Charts by Recharts
+- UI inspiration from modern fitness applications
+
+---
+
+**Built with ❤️ for the fitness community**
