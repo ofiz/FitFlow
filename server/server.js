@@ -26,6 +26,7 @@ const userRoutes = require('./routes/user');
 const calculatorRoutes = require('./routes/calculator');
 const progressRoutes = require('./routes/progress');
 const triviaRoutes = require('./routes/trivia');
+const aiCoachRoutes = require('./routes/aiCoach');
 const analyticsRoutes = require('./routes/analytics');
 
 // Health check route
@@ -41,6 +42,7 @@ app.use('/api/calculator', calculatorRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/trivia', triviaRoutes);
+app.use('/api/ai-coach', aiCoachRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Export app for testing

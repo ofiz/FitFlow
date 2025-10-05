@@ -171,3 +171,8 @@ export const triviaAPI = {
   getStats: () => apiCall('/trivia/stats'),
   seedQuestions: () => apiCall('/trivia/seed', 'POST'),
 };
+
+// AI Coach API calls
+export const aiCoachAPI = {
+  chat: (data) => apiCall('/ai-coach/chat', 'POST', data),
+};
