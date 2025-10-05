@@ -26,6 +26,7 @@ const userRoutes = require('./routes/user');
 const calculatorRoutes = require('./routes/calculator');
 const progressRoutes = require('./routes/progress');
 const triviaRoutes = require('./routes/trivia');
+const analyticsRoutes = require('./routes/analytics');
 
 // Health check route
 app.use('/api/test', require('./routes/healthcheck'));
@@ -40,6 +41,7 @@ app.use('/api/calculator', calculatorRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/trivia', triviaRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Export app for testing
 module.exports = app;
