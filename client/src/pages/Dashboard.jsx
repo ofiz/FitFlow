@@ -1,6 +1,6 @@
 // src/components/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X, LogOut } from 'lucide-react';
+import { Home, Dumbbell, Apple, Camera, Target, Brain, TrendingUp, Calculator, MessageCircle, User, Menu, X, LogOut, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { userAPI, authAPI } from '../utils/api';
 import '../styles/components/Dashboard.css';
@@ -16,6 +16,7 @@ import TriviaTab from '../components/tabs/TriviaTab';
 import AnalyticsTab from '../components/tabs/AnalyticsTab';
 import AICoachTab from '../components/tabs/AICoachTab';
 import ProfileTab from '../components/tabs/ProfileTab';
+import PracticalContentTab from '../components/tabs/PracticalContentTab';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const Dashboard = () => {
     { id: 'calculator', icon: Calculator, label: 'Calorie Calculator', color: 'red-pink' },
     { id: 'trivia', icon: Brain, label: 'Nutrition Trivia', color: 'indigo-purple' },
     { id: 'analytics', icon: TrendingUp, label: 'Analytics', color: 'teal-green' },
+    { id: 'practical', icon: ExternalLink, label: 'Practical Content', color: 'cyan-blue' },  
     { id: 'ai-coach', icon: MessageCircle, label: 'AI Coach', color: 'violet-purple' },
     { id: 'profile', icon: User, label: 'Profile', color: 'gray-slate' },
   ];
@@ -72,6 +74,7 @@ const Dashboard = () => {
       case 'calculator': return <CalculatorTab />;
       case 'trivia': return <TriviaTab />;
       case 'analytics': return <AnalyticsTab />;
+      case 'practical': return <PracticalContentTab />;  
       case 'ai-coach': return <AICoachTab />;
       case 'profile': return <ProfileTab />;
       default: return <OverviewTab />;
