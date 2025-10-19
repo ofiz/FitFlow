@@ -15,9 +15,12 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 - **Nutrition Trivia** - Test your nutrition knowledge with an interactive quiz game
 - **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7
 - **Profile Management** - Update personal information, fitness goals, and change password
+- **Password Reset** - Secure password recovery via email with SHA-1 encrypted tokens
+
 
 ### Technical Features
 - JWT-based authentication with secure password handling
+- Email-based password reset with SMTP integration
 - Responsive design optimized for mobile and desktop
 - RESTful API architecture
 - Comprehensive test coverage (90 tests)
@@ -59,9 +62,17 @@ FitFlow/
 │   │   │   └── tabs/            # Main feature tabs 
 │   │   ├── pages/
 │   │   │   ├── Auth/            # Login & Register
+│   │   │   │   ├── Login.jsx
+│   │   │   │   ├── Register.jsx
+│   │   │   │   ├── ForgotPassword.jsx   
+│   │   │   │   └── ResetPassword.jsx     
 │   │   │   ├── Dashboard.jsx
 │   │   │   └── Home.jsx
 │   │   ├── styles/              # CSS files
+│   │   │   └── components/
+│   │   │       ├── Login.css
+│   │   │       ├── ForgotPassword.css    
+│   │   │       └── ResetPassword.css     
 │   │   └── utils/               # API calls
 │   ├── Dockerfile
 │   ├── nginx.conf
@@ -72,7 +83,7 @@ FitFlow/
 │   ├── controllers/             # Business logic 
 │   │   ├── aiCoachController.js
 │   │   ├── analyticsController.js
-│   │   ├── authController.js
+│   │   ├── authController.js    
 │   │   ├── calculatorController.js
 │   │   ├── dashboardController.js
 │   │   ├── goalController.js
@@ -89,23 +100,26 @@ FitFlow/
 │   │   ├── Progress.js
 │   │   ├── TriviaQuestion.js
 │   │   ├── TriviaScore.js
-│   │   ├── User.js
+│   │   ├── User.js              
 │   │   └── Workout.js
 │   ├── routes/                  # API endpoints 
+│   │   └── auth.js              
 │   ├── tests/                   # Jest test suites 
 │   │   └── api/
-│   │       ├── aiCoach.test.js
 │   │       ├── analytics.test.js
 │   │       ├── auth.test.js
 │   │       ├── calculator.test.js
 │   │       ├── dashboard.test.js
 │   │       ├── goals.test.js
 │   │       ├── nutrition.test.js
+│   │       ├── passwordReset.test.js   
 │   │       ├── progress.test.js
 │   │       ├── trivia.test.js
 │   │       ├── user.test.js
 │   │       └── workouts.test.js
 │   ├── uploads/                 # User uploaded files
+│   ├── utils/
+│   │   └── emailService.js      # SMTP email service
 │   ├── .env.example
 │   ├── Dockerfile
 │   ├── package.json
@@ -121,6 +135,7 @@ FitFlow/
 - **Docker** & Docker Compose
 - **MongoDB Atlas** account (or local MongoDB)
 - **Mistral AI API Key** for AI Coach feature
+- **Gmail Account** with App Password for email functionality
 
 ## Installation & Setup
 
@@ -142,12 +157,23 @@ JWT_SECRET=your-secret-key-here-minimum-32-characters-long
 JWT_EXPIRE=30d
 PORT=5000
 MISTRAL_API_KEY=your-mistral-api-key-here
+
+# SMTP Configuration for Password Reset
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-gmail-app-password
+SMTP_FROM=FitFlow <noreply@fitflow.com>
+FRONTEND_URL=http://localhost
 ```
 
 **Replace:**
 - `username:password` with your MongoDB Atlas credentials
 - `your-secret-key-here` with a strong random string (32+ characters)
 - `your-mistral-api-key-here` with your Mistral AI API key (see below)
+- `your-email@gmail.com` with your Gmail address
+- `your-gmail-app-password` with your Gmail App Password (see below)
+- `FRONTEND_URL` with your production domain when deploying
 
 ## GitHub Actions — Create Secrets before running CI/CD
 
@@ -163,7 +189,10 @@ Before running the pipeline, create repository **Secrets** so tests/builds don�
 - `JWT_EXPIRE` — e.g. `30d` *(optional; only if your tests depend on it)*
 - `DOCKER_USERNAME` — your Docker Hub username (for image push)
 - `DOCKER_PASSWORD` — Docker Hub token/password
-- `MISTRAL_API_KEY` — Mistral AI API key  
+- `MISTRAL_API_KEY` — Mistral AI API key 
+- `SMTP_USER` — Gmail address for password reset emails
+- `SMTP_PASS` — Gmail App Password
+- `SMTP_FROM` — Email sender display name (e.g., "FitFlow <noreply@fitflow.com>") 
 
 ### 3. Run with Docker (Recommended)
 
@@ -203,7 +232,38 @@ The AI Coach feature requires a Mistral AI API key:
 
 For more details, visit [Mistral AI Pricing](https://mistral.ai/technology/#pricing)
 
-### 5. Run Locally (Without Docker)
+### 5. Setting Up Gmail SMTP for Password Reset
+
+The password reset feature requires Gmail SMTP. Follow these steps:
+
+#### Step 1: Enable 2-Step Verification
+1. Go to your [Google Account Security](https://myaccount.google.com/security)
+2. Under "Signing in to Google", select **2-Step Verification**
+3. Follow the prompts to enable it
+
+#### Step 2: Create App Password
+1. Return to [Google Account Security](https://myaccount.google.com/security)
+2. Under "Signing in to Google", select **App passwords**
+3. Select app: **Mail**
+4. Select device: **Other (Custom name)** → Enter "FitFlow"
+5. Click **Generate**
+6. **Copy the 16-character password** (shown only once!)
+7. Add it to your `.env` file as `SMTP_PASS`
+
+**Important Notes:**
+- Use the **App Password**, NOT your regular Gmail password
+- Keep the App Password secure and never commit it to version control
+- You can revoke App Passwords anytime from Google Account settings
+
+#### SMTP Configuration Details
+- **Host:** smtp.gmail.com
+- **Port:** 587 (TLS/STARTTLS)
+- **Security:** STARTTLS (not SSL)
+- **Authentication:** Required
+
+For production deployments, update `FRONTEND_URL` to your actual domain (e.g., `https://fitflow.com`)
+
+### 6. Run Locally (Without Docker)
 
 #### Backend Setup
 ```bash
@@ -238,6 +298,7 @@ npm test -- auth.test.js
 **Test Coverage:**
 - 100+ comprehensive tests across all API endpoints
 - Authentication, CRUD operations, analytics, calculations
+- Password reset flow with token validation
 - Edge cases and error handling
 
 ## API Documentation
@@ -245,6 +306,8 @@ npm test -- auth.test.js
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
+- `POST /api/auth/forgot-password` - Request password reset email
+- `POST /api/auth/reset-password/:token` - Reset password with token
 
 ### User
 - `GET /api/user/profile` - Get user profile
@@ -389,7 +452,7 @@ cd server
 npm test
 ```
 
-Expected output: **90 tests passing** across:
+Expected output: **100+ tests passing** across:
 - Authentication (6 tests)
 - User management (16 tests)
 - Workouts (15 tests)
@@ -400,6 +463,7 @@ Expected output: **90 tests passing** across:
 - Trivia (5 tests)
 - Calculator (8 tests)
 - Dashboard (4 tests)
+- Password Reset (20 tests)
 
 ## Troubleshooting
 
@@ -417,6 +481,21 @@ Expected output: **90 tests passing** across:
 - Check console for specific error messages
 - Ensure MISTRAL_API_KEY is set in `.env`
 
+**Email Not Sending (Password Reset)**
+- Verify Gmail App Password is correct (16 characters, no spaces)
+- Ensure 2-Step Verification is enabled on Gmail account
+- Check SMTP_USER matches the Gmail account that generated the App Password
+- Verify SMTP_HOST is `smtp.gmail.com` and SMTP_PORT is `587`
+- Check server logs for detailed SMTP errors: `docker-compose logs -f server`
+- Ensure "Less secure app access" is NOT enabled (use App Passwords instead)
+- Verify FRONTEND_URL matches your deployment URL
+
+**Password Reset Link Not Working**
+- Check if the link has expired (1-hour validity)
+- Verify FRONTEND_URL in `.env` matches your actual domain
+- Ensure the reset token in the URL is complete (not truncated)
+- Check browser console for errors
+
 **Docker Build Fails**
 - Clear Docker cache: `docker-compose build --no-cache`
 - Check Docker daemon is running
@@ -431,6 +510,28 @@ Expected output: **90 tests passing** across:
 - Check if server is running (port 5000)
 - Verify CORS configuration
 - Clear browser cache
+
+## Security Best Practices
+
+### Password Reset
+- Tokens are encrypted with SHA-1 before storage
+- Tokens expire after 1 hour
+- Single-use tokens (automatically deleted after use)
+- Generic error messages prevent user enumeration
+- Email links are unique and non-guessable
+
+### Email Security
+- Use Gmail App Passwords (never regular passwords)
+- Keep SMTP credentials in `.env` (never commit)
+- Rotate App Passwords periodically
+- Revoke App Passwords when no longer needed
+
+### General Security
+- All passwords hashed with bcrypt (12 rounds)
+- JWT tokens for stateless authentication
+- CORS configured for frontend-only access
+- Input validation on all endpoints
+- SQL injection prevention via Mongoose
 
 ## Author
 
