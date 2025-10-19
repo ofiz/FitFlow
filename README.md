@@ -13,6 +13,7 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 - **Analytics & Stats** - Comprehensive charts and insights (workout frequency, calorie intake, macros breakdown, duration trends)
 - **BMR/TDEE Calculator** - Calculate daily calorie needs based on personal metrics
 - **Nutrition Trivia** - Test your nutrition knowledge with an interactive quiz game
+- **Practical Content** - Curated external resources for supplements, workout programs, and fitness content
 - **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7
 - **Profile Management** - Update personal information, fitness goals, and change password
 
@@ -53,6 +54,8 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 FitFlow/
 ├── client/                      # Frontend React application
 │   ├── src/
+│   │   ├── assets/
+│   │   │   └── logos/           # External resource logos
 │   │   ├── components/
 │   │   │   ├── common/          # Reusable components 
 │   │   │   ├── modals/          # Add/Edit modals 
@@ -81,7 +84,7 @@ FitFlow/
 │   │   ├── triviaController.js
 │   │   ├── userController.js
 │   │   └── workoutController.js
-│   ├── middleware/              # Auth, error handling, validation
+│   ├── middleware/              # Auth
 │   ├── models/                  # Mongoose schemas 
 │   │   ├── Calculator.js
 │   │   ├── Goal.js
@@ -151,7 +154,7 @@ MISTRAL_API_KEY=your-mistral-api-key-here
 
 ## GitHub Actions — Create Secrets before running CI/CD
 
-Before running the pipeline, create repository **Secrets** so tests/builds don’t fail.
+Before running the pipeline, create repository **Secrets** so tests/builds don't fail.
 
 ### How to add Secrets
 1. Go to **GitHub → Your repository → Settings → Secrets and variables → Actions**  
@@ -335,6 +338,13 @@ View your daily summary including:
 - Track progress with visual bars
 - Update current values as you progress
 - Celebrate milestones
+
+#### Practical Content
+Access curated external resources organized into three categories:
+- **Supplement Stores** - Direct links to iHerb, MyProtein, and IsraelBody for purchasing fitness supplements and nutrition products
+- **Free Workout Programs** - Access professional training plans from Muscle & Strength and OneBody
+- **Content & Blogs** - Educational articles and guides from Healthline and MyFitnessPal Blog
+- Click on any logo card to open the resource in a new tab
 
 #### Profile
 - Update personal information
