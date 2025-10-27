@@ -1,6 +1,22 @@
-version: '3.8'
-
 services:
+  ml-service:
+    build: ./ml-service
+    container_name: fitflow-ml-service
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - fitflow-network
+
   server:
     build: ./server
     container_name: fitflow-server
@@ -9,14 +25,21 @@ services:
       - "5000:5000"
     env_file:
       - ./server/.env
+    environment:
+      - ML_SERVICE_URL=http://ml-service:5001
     volumes:                         
       - ./server/uploads:/app/uploads 
+    depends_on:
+      ml-service:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/test', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 10s
+    networks:
+      - fitflow-network
 
   client:
     build: ./client
@@ -27,6 +50,12 @@ services:
     depends_on:
       server:
         condition: service_healthy
+    networks:
+      - fitflow-network
+
+networks:
+  fitflow-network:
+    driver: bridge
 
 volumes:
   mongodb_data:

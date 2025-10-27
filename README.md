@@ -8,7 +8,7 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 - **Dashboard Overview** - Real-time fitness summary with key metrics
 - **Workout Tracking** - Log exercises, duration, difficulty, and track workout history
 - **Nutrition Tracker** - Track daily meals, calories, and macronutrient breakdown (protein, carbs, fats)
-- **Progress Gallery** - Upload and visualize transformation photos over time
+- **Progress Gallery** - Upload and visualize transformation photos over time with **AI-powered body analysis**
 - **Goals Management** - Set and track fitness milestones with progress bars
 - **Analytics & Stats** - Comprehensive charts and insights (workout frequency, calorie intake, macros breakdown, duration trends)
 - **BMR/TDEE Calculator** - Calculate daily calorie needs based on personal metrics
@@ -16,6 +16,16 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 - **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7
 - **Profile Management** - Update personal information, fitness goals, and change password
 - **Password Reset** - Secure password recovery via email with SHA-1 encrypted tokens
+
+### 🆕 Deep Learning Features
+- **Progress Photo Analysis** - AI-powered body composition analysis using deep learning
+  - Body fat percentage estimation
+  - Muscle definition scoring
+  - Posture quality assessment
+  - Overall progress tracking
+  - Photo quality metrics (lighting, clarity, contrast)
+- **Photo Comparison** - Compare transformation between two photos with improvement metrics
+- **Automated Insights** - Get instant AI feedback on your progress photos
 
 
 ### Technical Features
@@ -45,10 +55,18 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 - **Jest** & Supertest for testing
 - **Multer** for file uploads
 
+### Machine Learning
+- **Python** 3.10 with Flask
+- **TensorFlow** 2.15 with Keras
+- **MobileNetV2** (Transfer Learning)
+- **OpenCV** & Pillow for image processing
+- **pytest** for ML testing
+
 ### DevOps
 - **Docker** & Docker Compose
 - **Nginx** reverse proxy
 - Multi-stage builds for optimization
+- Microservices architecture
 
 ## Project Structure
 
@@ -87,6 +105,7 @@ FitFlow/
 │   │   ├── calculatorController.js
 │   │   ├── dashboardController.js
 │   │   ├── goalController.js
+│   │   ├── mlAnalysisController.js  # ML service integration
 │   │   ├── nutritionController.js
 │   │   ├── progressController.js
 │   │   ├── triviaController.js
@@ -97,7 +116,7 @@ FitFlow/
 │   │   ├── Calculator.js
 │   │   ├── Goal.js
 │   │   ├── Meal.js
-│   │   ├── Progress.js
+│   │   ├── Progress.js          # Enhanced with AI analysis fields
 │   │   ├── TriviaQuestion.js
 │   │   ├── TriviaScore.js
 │   │   ├── User.js              
@@ -111,6 +130,7 @@ FitFlow/
 │   │       ├── calculator.test.js
 │   │       ├── dashboard.test.js
 │   │       ├── goals.test.js
+│   │       ├── mlAnalysis.test.js    # ML integration tests
 │   │       ├── nutrition.test.js
 │   │       ├── passwordReset.test.js   
 │   │       ├── progress.test.js
@@ -124,6 +144,19 @@ FitFlow/
 │   ├── Dockerfile
 │   ├── package.json
 │   └── server.js
+│
+├── ml-service/                  # Python ML microservice
+│   ├── src/
+│   │   ├── app.py              # Flask REST API
+│   │   └── photoAnalyzer.py    # Deep learning model
+│   ├── tests/
+│   │   ├── test_api.py         # API endpoint tests
+│   │   └── test_photoAnalyzer.py  # Model tests
+│   ├── models/                 # Model weights storage
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── pytest.ini
+│   └── README.md               # Detailed ML documentation
 │
 ├── docker-compose.yml
 └── README.md
