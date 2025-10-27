@@ -36,6 +36,32 @@ h1 {
   line-height: 1.1;
 }
 
+/* Tab Headers - Global Styles */
+.tab-header {
+  margin-bottom: 8px;
+}
+
+.workouts-tab .tab-header .tab-title,
+.nutrition-tab .tab-header .tab-title,
+.progress-tab .tab-header .tab-title,
+.tab-header h1.tab-title,
+.tab-header .tab-title,
+h1.tab-title {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+  display: inline-block !important;
+  line-height: 1.2 !important;
+  width: auto !important;
+  max-width: fit-content !important;
+  min-width: min-content !important;
+}
+
+.tab-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
