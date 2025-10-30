@@ -142,15 +142,15 @@ return (
             <button type="submit" className="login-button">
               Login
             </button>
+
+            <div className="forgot-password-link">
+              <Link to="/forgot-password">Forgot your password? Reset it here</Link>
+            </div>
+
+            <p className="register-link">
+              Don’t have an account? <Link to="/register">Register here</Link>
+            </p>
           </form>
-
-          <div className="forgot-password-link">
-            <Link to="/forgot-password">Forgot your password?</Link>
-          </div>
-
-          <p className="register-link">
-            Don't have an account? <Link to="/register">Register here</Link>
-          </p>
         </div>
       </div>
     </>
