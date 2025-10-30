@@ -163,22 +163,143 @@ const forgotPassword = async (req, res) => {
     console.log('⏰ Token expires at:', new Date(user.resetPasswordExpire));
 
     // Create reset URL (use plain token in URL, not hashed)
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost'}/reset-password/${resetToken}`;
     console.log('🔗 Reset URL:', resetUrl);
 
-    // Send email
+    // Send email with styled template
     try {
       await emailTransporter.sendMail({
-        from: process.env.SMTP_USER,
+        from: `"FitFlow" <${process.env.SMTP_USER}>`,
         to: user.email,
-        subject: 'FitFlow - Password Reset Request',
+        subject: '🔐 FitFlow - Password Reset Request',
         html: `
-          <h2>Password Reset Request</h2>
-          <p>You requested to reset your password for FitFlow.</p>
-          <p>Please click the link below to reset your password:</p>
-          <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #4ecdc4; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
-          <p>This link will expire in 1 hour.</p>
-          <p>If you didn't request this, please ignore this email.</p>
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 40px auto;
+                background: white;
+                border: 1px solid #e0e0e0;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+              }
+              .email-header {
+                background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+                padding: 40px 20px;
+                text-align: center;
+              }
+              .logo {
+                font-size: 32px;
+                font-weight: 800;
+                color: white;
+                margin: 0;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+              }
+              .email-body {
+                padding: 40px 30px;
+                background: white;
+              }
+              .email-body h2 {
+                color: #333;
+                font-size: 24px;
+                margin-bottom: 20px;
+                font-weight: 700;
+              }
+              .email-body p {
+                color: #555;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                font-size: 16px;
+              }
+              .reset-button {
+                display: inline-block;
+                padding: 16px 40px;
+                background: linear-gradient(135deg, #4ecdc4, #ff6b6b);
+                color: white;
+                text-decoration: none;
+                border-radius: 10px;
+                font-weight: 700;
+                font-size: 18px;
+                margin: 20px 0;
+                box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+              }
+              .reset-button:hover {
+                box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+              }
+              .button-container {
+                text-align: center;
+                margin: 30px 0;
+              }
+              .warning {
+                background: #fff3f3;
+                border-left: 4px solid #ff6b6b;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 8px;
+              }
+              .warning p {
+                color: #333;
+                margin: 0;
+                font-size: 14px;
+              }
+              .email-footer {
+                padding: 20px 30px;
+                border-top: 1px solid #e0e0e0;
+                text-align: center;
+                background: #f9f9f9;
+                color: #888;
+                font-size: 14px;
+              }
+              .link-text {
+                color: #4ecdc4;
+                word-break: break-all;
+                font-size: 14px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <div class="email-header">
+                <h1 class="logo">💪 FitFlow</h1>
+              </div>
+              <div class="email-body">
+                <h2>Password Reset Request</h2>
+                <p>Hello,</p>
+                <p>We received a request to reset your password for your FitFlow account. Click the button below to create a new password:</p>
+                
+                <div class="button-container">
+                  <a href="${resetUrl}" class="reset-button">Reset Password</a>
+                </div>
+                
+                <p style="text-align: center; color: #888; font-size: 14px;">
+                  Or copy and paste this link into your browser:<br>
+                  <span class="link-text">${resetUrl}</span>
+                </p>
+                
+                <div class="warning">
+                  <p><strong>⏰ This link will expire in 1 hour</strong></p>
+                </div>
+                
+                <p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>
+              </div>
+              <div class="email-footer">
+                <p>© 2025 FitFlow. All rights reserved.</p>
+                <p>This is an automated email, please do not reply.</p>
+              </div>
+            </div>
+          </body>
+          </html>
         `
       });
 

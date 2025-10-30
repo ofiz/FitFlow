@@ -59,20 +59,20 @@ const ResetPassword = () => {
 
   return (
     <div className="reset-password-container">
+      {message && (
+        <div className="custom-alert custom-alert--success">
+          <span className="alert-message">{message}</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="custom-alert custom-alert--error">
+          <span className="alert-message">{error}</span>
+        </div>
+      )}
+
       <div className="reset-password-card">
         <h1>Reset Your Password</h1>
-
-        {message && (
-          <div className="custom-alert custom-alert--success">
-            <span className="alert-message">{message}</span>
-          </div>
-        )}
-
-        {error && (
-          <div className="custom-alert custom-alert--error">
-            <span className="alert-message">{error}</span>
-          </div>
-        )}
 
         <form className="reset-password-form" onSubmit={handleSubmit}>
           <div className="form-group">

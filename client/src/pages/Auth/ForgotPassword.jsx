@@ -41,23 +41,23 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-container">
+      {message && (
+        <div className="custom-alert custom-alert--success">
+          <span className="alert-message">{message}</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="custom-alert custom-alert--error">
+          <span className="alert-message">{error}</span>
+        </div>
+      )}
+
       <div className="forgot-password-card">
         <h1>Reset Password</h1>
         <p className="instruction-text">
           Enter your email address and we'll send you a link to reset your password.
         </p>
-
-        {message && (
-          <div className="custom-alert custom-alert--success">
-            <span className="alert-message">{message}</span>
-          </div>
-        )}
-
-        {error && (
-          <div className="custom-alert custom-alert--error">
-            <span className="alert-message">{error}</span>
-          </div>
-        )}
 
         <form className="forgot-password-form" onSubmit={handleSubmit}>
           <div className="form-group">
