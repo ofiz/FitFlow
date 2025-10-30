@@ -144,8 +144,12 @@ return (
             </button>
           </form>
 
+          <div className="forgot-password-link">
+            <Link to="/forgot-password">Forgot your password?</Link>
+          </div>
+
           <p className="register-link">
-            Don’t have an account? <Link to="/register">Register here</Link>
+            Don't have an account? <Link to="/register">Register here</Link>
           </p>
         </div>
       </div>
