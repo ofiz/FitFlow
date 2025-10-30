@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
 const User = require('../models/User');
 const crypto = require('crypto');
 const { sendPasswordResetEmail } = require('../utils/emailService');

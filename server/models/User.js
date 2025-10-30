@@ -44,6 +44,14 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 2000
   },
+  resetPasswordToken: {
+    type: String,
+    default: null
+  },
+  resetPasswordExpire: {
+    type: Date,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
