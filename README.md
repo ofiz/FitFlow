@@ -145,8 +145,8 @@ FitFlow/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/fitflow.git
-cd fitflow
+git clone https://github.com/LirChen/FitFlow.git
+cd FitFlow
 ```
 
 ### 2. Environment Variables
