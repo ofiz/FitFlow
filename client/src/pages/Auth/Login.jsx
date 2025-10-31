@@ -142,7 +142,6 @@ return (
             <button type="submit" className="login-button">
               Login
             </button>
-          </form>
 
           <div className="forgot-password-link">
             <Link to="/forgot-password">Forgot your password?</Link>
