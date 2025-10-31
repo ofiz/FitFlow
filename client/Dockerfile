@@ -7,7 +7,7 @@ RUN apk update && apk upgrade --no-cache
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install && npm install --no-save @rollup/rollup-linux-x64-musl
 
 COPY . .
 RUN npm run build
