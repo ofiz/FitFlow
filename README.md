@@ -92,7 +92,7 @@ FitFlow/
 │   │   ├── triviaController.js
 │   │   ├── userController.js
 │   │   └── workoutController.js
-│   ├── middleware/              # Auth, error handling, validation
+│   ├── middleware/              # Auth
 │   ├── models/                  # Mongoose schemas 
 │   │   ├── Calculator.js
 │   │   ├── Goal.js

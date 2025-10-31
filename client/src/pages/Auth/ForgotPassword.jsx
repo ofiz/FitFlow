@@ -1,103 +1,92 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../../styles/components/ForgotPassword.css";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import '../../styles/components/ForgotPassword.css';
 
-function ForgotPassword() {
-  const [email, setEmail] = useState("");
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "error"
-  });
-  const [isLoading, setIsLoading] = useState(false);
-
-  const showAlert = (message, type = "error") => {
-    setAlert({ show: true, message, type });
-    setTimeout(() => {
-      setAlert({ show: false, message: "", type: "error" });
-    }, 5000);
-  };
+const ForgotPassword = () => {
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!email.trim()) {
-      showAlert("Please enter your email", "error");
-      return;
-    }
+    setMessage('');
+    setError('');
+    setLoading(true);
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showAlert("Please enter a valid email", "error");
-      return;
-    }
-
-    setIsLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/forgot-password",
-        { email }
-      );
-      showAlert(response.data.message, "success");
-      setEmail("");
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 
-                          "Failed to send reset email. Please try again.";
-      showAlert(errorMessage, "error");
+      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(data.message || 'Password reset email sent! Check your inbox.');
+        setEmail('');
+      } else {
+        setError(data.message || 'Failed to send reset email');
+      }
+    } catch (err) {
+      console.error('Forgot password error:', err);
+      setError('Network error. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      {alert.show && (
-        <div className={`custom-alert custom-alert--${alert.type}`}>
-          <span className="alert-message">{alert.message}</span>
-          <button
-            className="alert-close"
-            onClick={() => setAlert({ ...alert, show: false })}
-          >
-            ×
-          </button>
+    <div className="forgot-password-container">
+      {message && (
+        <div className="custom-alert custom-alert--success">
+          <span className="alert-message">{message}</span>
         </div>
       )}
 
-      <div className="forgot-password-container">
-        <div className="forgot-password-card">
-          <h1>Reset Password</h1>
-          <p className="instruction-text">
-            Enter your email address and we'll send you a link to reset your password.
-          </p>
-          
-          <form className="forgot-password-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Email:</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
+      {error && (
+        <div className="custom-alert custom-alert--error">
+          <span className="alert-message">{error}</span>
+        </div>
+      )}
 
-            <button 
-              type="submit" 
-              className="reset-button"
-              disabled={isLoading}
-            >
-              {isLoading ? "Sending..." : "Send Reset Link"}
-            </button>
-          </form>
+      <div className="forgot-password-card">
+        <h1>Reset Password</h1>
+        <p className="instruction-text">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
 
-          <div className="back-to-login">
-            <Link to="/login">Back to Login</Link>
+        <form className="forgot-password-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
           </div>
+
+          <button 
+            type="submit" 
+            className="reset-button" 
+            disabled={loading}
+          >
+            {loading ? 'Sending...' : 'Send Reset Link'}
+          </button>
+        </form>
+
+        <div className="back-to-login">
+          <Link to="/login">Back to Login</Link>
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default ForgotPassword;

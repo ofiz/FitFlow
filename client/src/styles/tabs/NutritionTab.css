@@ -6,6 +6,22 @@
   max-width: 100%;
 }
 
+.tab-header {
+  margin-bottom: 8px;
+}
+
+.tab-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.tab-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+}
+
 .gradient-green-emerald {
   background: linear-gradient(135deg, #4ade80, #34d399);
   -webkit-background-clip: text;

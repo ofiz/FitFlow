@@ -1,10 +1,13 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:23-alpine3.22 AS build
+
+# Update Alpine packages for security
+RUN apk update && apk upgrade --no-cache
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN rm -rf package-lock.json node_modules && npm install
 
 COPY . .
 RUN npm run build
