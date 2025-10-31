@@ -75,8 +75,7 @@ jobs:
           context: ./client
           push: false
           tags: fitflow-client:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
 
   docker-hub:
     name: Push to Docker Hub
@@ -116,5 +115,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:latest
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true

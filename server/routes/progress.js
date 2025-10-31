@@ -6,15 +6,13 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Use relative path with path.join for cross-platform compatibility
+// Ensure upload directory exists - using absolute path
 const uploadDir = path.join(__dirname, '..', 'uploads', 'progress-photos');
 
-console.log('Upload directory:', uploadDir);
-
-// Ensure upload directory exists
+// Create directory synchronously before anything else
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log('Created upload directory');
+  console.log('Created upload directory:', uploadDir);
 }
 
 // Configure multer for file uploads
