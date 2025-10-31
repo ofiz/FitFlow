@@ -2,12 +2,13 @@ FROM node:23-alpine3.21
 
 # Update Alpine packages for security fixes
 RUN apk update && apk upgrade --no-cache libcrypto3 libssl3
+WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm install --only=production
 
 # Copy source code
 COPY . .
