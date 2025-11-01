@@ -5,17 +5,18 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 ## Features
 
 ### Core Features
-- **Dashboard Overview** - Real-time fitness summary with key metrics
+- **Dashboard Overview** - Real-time fitness summary with key metrics and activity streak
 - **Workout Tracking** - Log exercises, duration, difficulty, and track workout history
 - **Nutrition Tracker** - Track daily meals, calories, and macronutrient breakdown (protein, carbs, fats)
 - **Progress Gallery** - Upload and visualize transformation photos over time with **AI-powered body analysis**
 - **Goals Management** - Set and track fitness milestones with progress bars
 - **Analytics & Stats** - Comprehensive charts and insights (workout frequency, calorie intake, macros breakdown, duration trends)
-- **BMR/TDEE Calculator** - Calculate daily calorie needs based on personal metrics
+- **BMR/TDEE Calculator** - Calculate daily calorie needs based on personal metrics and activity level
 - **Nutrition Trivia** - Test your nutrition knowledge with an interactive quiz game
-- **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7
+- **AI Fitness Coach** - Get personalized fitness and nutrition advice 24/7 powered by Mistral AI
+- **Practical Content** - Access educational fitness and nutrition resources
 - **Profile Management** - Update personal information, fitness goals, and change password
-- **Password Reset** - Secure password recovery via email with SHA-1 encrypted tokens
+- **Password Reset** - Secure password recovery via email with SHA-256 encrypted tokens
 
 ### 🆕 Deep Learning Features
 - **Progress Photo Analysis** - AI-powered body composition analysis using deep learning
@@ -40,33 +41,44 @@ A full-stack fitness tracking platform that helps users monitor their nutrition,
 ## Tech Stack
 
 ### Frontend
-- **React** 18 with Vite
+- **React** 19 with Vite 7
 - **Recharts** for data visualization
+- **Chart.js** with React Chart.js 2 for additional charts
 - **Lucide React** for icons
-- **CSS3** with modern glassmorphism design
+- **Axios** for API calls
+- **React Router DOM** v7 for navigation
+- **CSS3** with modern glassmorphism design and gradient text
 - **Nginx** for production serving
 
 ### Backend
-- **Node.js** with Express.js
-- **MongoDB** with Mongoose ODM
+- **Node.js** 22+ with Express.js
+- **MongoDB** with Mongoose ODM v7
 - **JWT** for authentication
-- **Bcrypt** for password hashing
-- **Mistral AI** for AI Coach feature
-- **Jest** & Supertest for testing
-- **Multer** for file uploads
+- **Bcryptjs** for password hashing (12 rounds)
+- **Mistral AI** SDK v1.10 for AI Coach feature
+- **Nodemailer** for email functionality (SMTP)
+- **Helmet** for security headers
+- **Express Rate Limit** for API rate limiting
+- **Jest** & Supertest for comprehensive testing (119 tests)
+- **Multer** v2 for file uploads
+- **Joi** for validation
 
 ### Machine Learning
-- **Python** 3.10 with Flask
-- **TensorFlow** 2.15 with Keras
+- **Python** 3.11 with Flask
+- **TensorFlow** 2.x with Keras
 - **MobileNetV2** (Transfer Learning)
 - **OpenCV** & Pillow for image processing
-- **pytest** for ML testing
+- **NumPy** for numerical operations
+- **pytest** for ML testing with coverage reports
 
 ### DevOps
-- **Docker** & Docker Compose
+- **Docker** & Docker Compose with health checks
 - **Nginx** reverse proxy
 - Multi-stage builds for optimization
-- Microservices architecture
+- Microservices architecture (3 services)
+- **GitHub Actions** CI/CD pipeline
+- Automated testing on push/PR
+- Docker Hub image publishing
 
 ## Project Structure
 
@@ -75,22 +87,20 @@ FitFlow/
 ├── client/                      # Frontend React application
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── common/          # Reusable components 
-│   │   │   ├── modals/          # Add/Edit modals 
-│   │   │   └── tabs/            # Main feature tabs 
+│   │   │   ├── common/          # DateFilter, reusable components
+│   │   │   ├── modals/          # Add/Edit workout and meal modals
+│   │   │   └── tabs/            # 11 feature tabs (Overview, Workouts, Nutrition, etc.) 
 │   │   ├── pages/
 │   │   │   ├── Auth/            # Login & Register
 │   │   │   │   ├── Login.jsx
 │   │   │   │   ├── Register.jsx
-│   │   │   │   ├── ForgotPassword.jsx   
+│   │   │   │   ├── ForgotPassword.jsx
 │   │   │   │   └── ResetPassword.jsx     
 │   │   │   ├── Dashboard.jsx
 │   │   │   └── Home.jsx
 │   │   ├── styles/              # CSS files
-│   │   │   └── components/
-│   │   │       ├── Login.css
-│   │   │       ├── ForgotPassword.css    
-│   │   │       └── ResetPassword.css     
+│   │   │   ├── components/      # Dashboard, Login, Register CSS
+│   │   │   └── tabs/            # Individual tab styles + tabs-global.css     
 │   │   └── utils/               # API calls
 │   ├── Dockerfile
 │   ├── nginx.conf
@@ -98,48 +108,54 @@ FitFlow/
 │
 ├── server/                      # Backend Node.js application
 │   ├── config/                  # Database configuration
-│   ├── controllers/             # Business logic 
+│   ├── controllers/             # Business logic (11 controllers)
 │   │   ├── aiCoachController.js
 │   │   ├── analyticsController.js
-│   │   ├── authController.js    
+│   │   ├── authController.js           # Login, register, password reset
 │   │   ├── calculatorController.js
 │   │   ├── dashboardController.js
 │   │   ├── goalController.js
-│   │   ├── mlAnalysisController.js  # ML service integration
+│   │   ├── mlAnalysisController.js     # ML service integration
 │   │   ├── nutritionController.js
 │   │   ├── progressController.js
 │   │   ├── triviaController.js
 │   │   ├── userController.js
 │   │   └── workoutController.js
-│   ├── middleware/              # Auth
-│   ├── models/                  # Mongoose schemas 
+│   ├── middleware/              # Auth, errorHandler, validation
+│   ├── models/                  # Mongoose schemas (10 models)
 │   │   ├── Calculator.js
+│   │   ├── Exercise.js          # Workout exercises
 │   │   ├── Goal.js
-│   │   ├── Meal.js
-│   │   ├── Progress.js          # Enhanced with AI analysis fields
+│   │   ├── NutritionEntry.js    # Meals/nutrition
+│   │   ├── Progress.js          # Progress photos with AI analysis
 │   │   ├── TriviaQuestion.js
 │   │   ├── TriviaScore.js
-│   │   ├── User.js              
+│   │   ├── User.js              # User profile with password reset tokens
 │   │   └── Workout.js
-│   ├── routes/                  # API endpoints 
-│   │   └── auth.js              
-│   ├── tests/                   # Jest test suites 
+│   ├── routes/                  # API endpoints (10 route files)
+│   │   ├── auth.js              # Authentication & password reset
+│   │   ├── users.js
+│   │   ├── workout.js
+│   │   └── nutrition.js         # ...and more              
+│   ├── tests/                   # Jest test suites (119 tests total)
 │   │   └── api/
 │   │       ├── analytics.test.js
 │   │       ├── auth.test.js
 │   │       ├── calculator.test.js
 │   │       ├── dashboard.test.js
 │   │       ├── goals.test.js
-│   │       ├── mlAnalysis.test.js    # ML integration tests
+│   │       ├── mlAnalysis.test.js       # ML integration tests
 │   │       ├── nutrition.test.js
-│   │       ├── passwordReset.test.js   
+│   │       ├── passwordReset.test.js    # 15 password reset tests
 │   │       ├── progress.test.js
 │   │       ├── trivia.test.js
 │   │       ├── user.test.js
 │   │       └── workouts.test.js
-│   ├── uploads/                 # User uploaded files
+│   ├── uploads/                 # User uploaded files (progress photos)
 │   ├── utils/
-│   │   └── emailService.js      # SMTP email service
+│   │   ├── emailService.js      # SMTP email service with mock transporter
+│   │   ├── jwt.js               # JWT utilities
+│   │   └── validators.js        # Input validation
 │   ├── .env.example
 │   ├── Dockerfile
 │   ├── package.json
@@ -164,11 +180,12 @@ FitFlow/
 
 ## Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 22+ 
+- **Python** 3.11+ (for ML service)
 - **Docker** & Docker Compose
 - **MongoDB Atlas** account (or local MongoDB)
 - **Mistral AI API Key** for AI Coach feature
-- **Gmail Account** with App Password for email functionality
+- **Gmail Account** with App Password for password reset emails
 
 ## Installation & Setup
 
@@ -208,29 +225,35 @@ FRONTEND_URL=http://localhost
 - `your-gmail-app-password` with your Gmail App Password (see below)
 - `FRONTEND_URL` with your production domain when deploying
 
-## GitHub Actions — Create Secrets before running CI/CD
+## GitHub Actions CI/CD
 
-Before running the pipeline, create repository **Secrets** so tests/builds don’t fail.
+The project includes automated CI/CD pipeline that runs on:
+- **Push to master** - Full CI/CD (tests, builds, Docker Hub push)
+- **Pull Requests to master** - CI only (tests and build verification)
 
-### How to add Secrets
-1. Go to **GitHub → Your repository → Settings → Secrets and variables → Actions**  
-2. Under **Repository secrets**, click **New repository secret**  
-3. Enter a **Name** and **Value**, then click **Add secret**
+### Pipeline Jobs
+1. **test** - Run Node.js/Jest tests (119 tests)
+2. **test-ml** - Run Python/pytest tests for ML service
+3. **build** - Build all 3 Docker images (client, server, ml-service)
+4. **docker-hub** - Push images to Docker Hub (master only)
 
-### Required Secrets (for CI tests / build & push)
-- `JWT_SECRET` — a long random string (used by JWT in tests/runtime)
-- `JWT_EXPIRE` — e.g. `30d` *(optional; only if your tests depend on it)*
-- `DOCKER_USERNAME` — your Docker Hub username (for image push)
-- `DOCKER_PASSWORD` — Docker Hub token/password
-- `MISTRAL_API_KEY` — Mistral AI API key 
-- `SMTP_USER` — Gmail address for password reset emails
+### Required GitHub Secrets
+Before running the pipeline, add these secrets in **Settings → Secrets and variables → Actions**:
+
+- `JWT_SECRET` — Long random string (32+ characters)
+- `MISTRAL_API_KEY` — Mistral AI API key
+- `SMTP_USER` — Gmail address
 - `SMTP_PASS` — Gmail App Password
-- `SMTP_FROM` — Email sender display name (e.g., "FitFlow <noreply@fitflow.com>") 
+- `SMTP_HOST` — smtp.gmail.com
+- `SMTP_PORT` — 587
+- `SMTP_FROM` — "FitFlow <noreply@fitflow.com>"
+- `DOCKER_USERNAME` — Docker Hub username
+- `DOCKER_PASSWORD` — Docker Hub token/password
 
 ### 3. Run with Docker (Recommended)
 
 ```bash
-# Build and start all services
+# Build and start all services (client, server, ml-service)
 docker-compose up --build
 
 # Run in detached mode
@@ -239,13 +262,17 @@ docker-compose up -d
 # View logs
 docker-compose logs -f
 
+# View specific service logs
+docker-compose logs -f server
+
 # Stop services
 docker-compose down
 ```
 
 The application will be available at:
-- **Frontend:** http://localhost
+- **Frontend:** http://localhost (port 80)
 - **Backend API:** http://localhost:5000
+- **ML Service:** http://localhost:5001
 
 ### 4. Getting Mistral AI API Key
 
@@ -329,10 +356,12 @@ npm test -- auth.test.js
 ```
 
 **Test Coverage:**
-- 100+ comprehensive tests across all API endpoints
+- **119 comprehensive tests** across all API endpoints
 - Authentication, CRUD operations, analytics, calculations
-- Password reset flow with token validation
+- Password reset flow with SHA-256 token validation
+- ML service integration tests
 - Edge cases and error handling
+- MongoDB Memory Server for isolated testing
 
 ## API Documentation
 
@@ -450,15 +479,21 @@ Passwords must contain:
 ## Docker Configuration
 
 ### Services
-- **server** - Node.js backend (port 5000)
-- **client** - Nginx serving React app (port 80)
+- **ml-service** - Python Flask service (port 5001) with TensorFlow
+- **server** - Node.js backend (port 5000) depends on ml-service
+- **client** - Nginx serving React app (port 80) depends on server
 
 ### Volumes
-- `./server/uploads` - Persistent storage for uploaded photos
+- `./server/uploads` - Persistent storage for progress photos
+
+### Networks
+- **fitflow-network** - Bridge network connecting all services
 
 ### Health Checks
-- Server health check runs every 30 seconds
+- ML service: HTTP check on `/health` endpoint (60s start period)
+- Server: HTTP check on `/api/test` endpoint
 - Client depends on server health
+- Checks run every 30 seconds with 3 retries
 
 ## Contributing
 
@@ -485,7 +520,7 @@ cd server
 npm test
 ```
 
-Expected output: **100+ tests passing** across:
+Expected output: **119 tests passing** across:
 - Authentication (6 tests)
 - User management (16 tests)
 - Workouts (15 tests)
@@ -496,7 +531,8 @@ Expected output: **100+ tests passing** across:
 - Trivia (5 tests)
 - Calculator (8 tests)
 - Dashboard (4 tests)
-- Password Reset (20 tests)
+- Password Reset (15 tests)
+- ML Analysis integration (5 tests)
 
 ## Troubleshooting
 
@@ -544,14 +580,15 @@ Expected output: **100+ tests passing** across:
 - Verify CORS configuration
 - Clear browser cache
 
-## Security Best Practices
+### Security Best Practices
 
 ### Password Reset
-- Tokens are encrypted with SHA-1 before storage
+- Tokens are hashed with SHA-256 before database storage
 - Tokens expire after 1 hour
 - Single-use tokens (automatically deleted after use)
 - Generic error messages prevent user enumeration
 - Email links are unique and non-guessable
+- URL tokens are hashed again before database lookup
 
 ### Email Security
 - Use Gmail App Passwords (never regular passwords)
@@ -560,11 +597,15 @@ Expected output: **100+ tests passing** across:
 - Revoke App Passwords when no longer needed
 
 ### General Security
-- All passwords hashed with bcrypt (12 rounds)
-- JWT tokens for stateless authentication
+- All passwords hashed with bcryptjs (12 rounds)
+- JWT tokens for stateless authentication (30-day expiry)
+- Helmet.js for security headers
+- Express Rate Limit for API protection
 - CORS configured for frontend-only access
-- Input validation on all endpoints
-- SQL injection prevention via Mongoose
+- Joi validation on all endpoints
+- MongoDB injection prevention via Mongoose
+- Environment variables for sensitive data
+- Separate test/production environments
 
 ## Author
 
