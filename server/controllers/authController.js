@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
-const User = require('../models/User');
 const crypto = require('crypto');
-const { sendPasswordResetEmail } = require('../utils/emailService');
+const User = require('../models/User');
+const emailTransporter = require('../config/emailConfig');
 
 // Helper function to validate email format
 const isValidEmail = (email) => {
@@ -119,123 +119,254 @@ const logoutUser = async (req, res) => {
   }
 };
 
-// Request password reset
-// Request password reset
+// Forgot Password - Send reset email
 const forgotPassword = async (req, res) => {
   try {
-    console.log('🔐 ===== FORGOT PASSWORD REQUEST =====');
-    console.log('📧 Request body:', req.body);
-    
     const { email } = req.body;
-    console.log('📧 Email extracted:', email);
 
-    // Validate email
-    if (!email || !isValidEmail(email)) {
-      console.log('❌ Invalid email format');
-      return res.status(400).json({ message: "Please provide a valid email" });
+    console.log('🔍 Forgot password request for:', email);
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
     }
 
-    console.log('✅ Email format valid');
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
-    // Find user
-    console.log('🔍 Searching for user...');
+    // Find user by email
     const user = await User.findOne({ email });
-    
     if (!user) {
-      console.log('⚠️ User not found for email:', email);
-      // Don't reveal if user exists or not for security
-      return res.status(200).json({ 
-        message: "If this email exists, a reset link has been sent" 
-      });
+      console.log('❌ User not found:', email);
+      return res.status(404).json({ message: "No account found with this email" });
     }
 
-    console.log('✅ User found! ID:', user._id);
+    console.log('✅ User found:', user.email);
 
-    // Generate reset token using SHA-1
-    const resetToken = crypto
-      .createHash('sha1')
-      .update(`${user._id}${Date.now()}${Math.random()}`)
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    console.log('🔑 Generated reset token:', resetToken);
+
+    // Hash token before saving to database
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
       .digest('hex');
 
-    console.log('🔑 Reset token generated:', resetToken.substring(0, 10) + '...');
+    // Save hashed token and expiry to database
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
 
-    // Save token and expiration (1 hour)
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpire = Date.now() + 3600000;
     await user.save();
-
     console.log('💾 Token saved to database');
     console.log('⏰ Token expires at:', new Date(user.resetPasswordExpire));
 
-    // Send email
-    console.log('📤 Calling sendPasswordResetEmail...');
-    console.log('📧 Sending to:', user.email);
-    console.log('🔗 Reset token:', resetToken);
-    
-    const emailResult = await sendPasswordResetEmail(user.email, resetToken);
+    // Create reset URL (use plain token in URL, not hashed)
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost'}/reset-password/${resetToken}`;
+    console.log('🔗 Reset URL:', resetUrl);
 
-    console.log('📬 Email result:', emailResult);
+    // Send email with styled template
+    try {
+      await emailTransporter.sendMail({
+        from: `"FitFlow" <${process.env.SMTP_USER}>`,
+        to: user.email,
+        subject: '🔐 FitFlow - Password Reset Request',
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 40px auto;
+                background: white;
+                border: 1px solid #e0e0e0;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+              }
+              .email-header {
+                background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+                padding: 40px 20px;
+                text-align: center;
+              }
+              .logo {
+                font-size: 32px;
+                font-weight: 800;
+                color: white;
+                margin: 0;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+              }
+              .email-body {
+                padding: 40px 30px;
+                background: white;
+              }
+              .email-body h2 {
+                color: #333;
+                font-size: 24px;
+                margin-bottom: 20px;
+                font-weight: 700;
+              }
+              .email-body p {
+                color: #555;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                font-size: 16px;
+              }
+              .reset-button {
+                display: inline-block;
+                padding: 16px 40px;
+                background: linear-gradient(135deg, #4ecdc4, #ff6b6b);
+                color: white;
+                text-decoration: none;
+                border-radius: 10px;
+                font-weight: 700;
+                font-size: 18px;
+                margin: 20px 0;
+                box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+              }
+              .reset-button:hover {
+                box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+              }
+              .button-container {
+                text-align: center;
+                margin: 30px 0;
+              }
+              .warning {
+                background: #fff3f3;
+                border-left: 4px solid #ff6b6b;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 8px;
+              }
+              .warning p {
+                color: #333;
+                margin: 0;
+                font-size: 14px;
+              }
+              .email-footer {
+                padding: 20px 30px;
+                border-top: 1px solid #e0e0e0;
+                text-align: center;
+                background: #f9f9f9;
+                color: #888;
+                font-size: 14px;
+              }
+              .link-text {
+                color: #4ecdc4;
+                word-break: break-all;
+                font-size: 14px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <div class="email-header">
+                <h1 class="logo">💪 FitFlow</h1>
+              </div>
+              <div class="email-body">
+                <h2>Password Reset Request</h2>
+                <p>Hello,</p>
+                <p>We received a request to reset your password for your FitFlow account. Click the button below to create a new password:</p>
+                
+                <div class="button-container">
+                  <a href="${resetUrl}" class="reset-button">Reset Password</a>
+                </div>
+                
+                <p style="text-align: center; color: #888; font-size: 14px;">
+                  Or copy and paste this link into your browser:<br>
+                  <span class="link-text">${resetUrl}</span>
+                </p>
+                
+                <div class="warning">
+                  <p><strong>⏰ This link will expire in 1 hour</strong></p>
+                </div>
+                
+                <p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>
+              </div>
+              <div class="email-footer">
+                <p>© 2025 FitFlow. All rights reserved.</p>
+                <p>This is an automated email, please do not reply.</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `
+      });
 
-    if (!emailResult.success) {
-      console.error('❌ EMAIL FAILED!');
-      console.error('Error:', emailResult.error);
+      console.log('📧 Email sent successfully to:', user.email);
+      res.status(200).json({ message: "Password reset email sent successfully" });
+    } catch (emailError) {
+      console.error('❌ Email sending failed:', emailError);
+      // If email fails, clear the reset token
       user.resetPasswordToken = null;
       user.resetPasswordExpire = null;
       await user.save();
-      return res.status(500).json({ message: "Error sending email" });
+      
+      return res.status(500).json({ message: "Email could not be sent. Please try again later." });
     }
 
-    console.log('✅ ===== EMAIL SENT SUCCESSFULLY! =====');
-    
-    res.status(200).json({ 
-      message: "Password reset email sent successfully" 
-    });
   } catch (error) {
-    console.error("❌ ===== FORGOT PASSWORD ERROR =====");
-    console.error(error);
+    console.error('❌ Forgot password error:', error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Reset password with token
+// Reset Password - Verify token and update password
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { password } = req.body;
 
-    // Validate new password
-    if (!newPassword || newPassword.length < 6) {
-      return res.status(400).json({ 
-        message: "Password must be at least 6 characters" 
-      });
+    console.log('🔍 Reset password request with token');
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
     }
 
-    // Find user with valid token
+    // Hash the token from URL to compare with database
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+
+    // Find user with valid token and not expired
     const user = await User.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken: hashedToken,
       resetPasswordExpire: { $gt: Date.now() }
     });
 
     if (!user) {
-      return res.status(400).json({ 
-        message: "Invalid or expired reset token" 
-      });
+      console.log('❌ Invalid or expired token');
+      return res.status(400).json({ message: "Invalid or expired reset token" });
     }
+
+    console.log('✅ Valid token for user:', user.email);
 
     // Hash new password
     const saltRounds = 12;
-    user.password = await bcrypt.hash(newPassword, saltRounds);
-    
+    user.password = await bcrypt.hash(password, saltRounds);
+
     // Clear reset token fields
     user.resetPasswordToken = null;
     user.resetPasswordExpire = null;
-    await user.save();
 
-    res.status(200).json({ 
-      message: "Password has been reset successfully" 
-    });
+    await user.save();
+    console.log('✅ Password updated successfully');
+
+    res.status(200).json({ message: "Password reset successful" });
+
   } catch (error) {
-    console.error("Reset password error:", error);
+    console.error('❌ Reset password error:', error);
     res.status(500).json({ message: "Server error" });
   }
 };

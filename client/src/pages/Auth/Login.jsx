@@ -98,65 +98,76 @@ const handleSubmit = async (e) => {
   }
 }
 return (
-    <>
-      {alert.show && (
-        <div className={`custom-alert custom-alert--${alert.type}`}>
-          <span className="alert-message">{alert.message}</span>
-          <button
-            className="alert-close"
-            onClick={() => setAlert({ ...alert, show: false })}
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      <div className="login-container">
-        <div className="login-card">
-          <h1>Login</h1>
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Email:</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {errors.email && <span className="error-message">{errors.email}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Password:</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {errors.password && (
-                <span className="error-message">{errors.password}</span>
-              )}
-            </div>
-
-            <button type="submit" className="login-button">
-              Login
-            </button>
-
-            <div className="forgot-password-link">
-              <Link to="/forgot-password">Forgot your password? Reset it here</Link>
-            </div>
-
-            <p className="register-link">
-              Don’t have an account? <Link to="/register">Register here</Link>
-            </p>
-          </form>
-        </div>
+  <>
+    {alert.show && (
+      <div className={`custom-alert custom-alert--${alert.type}`} role="alert">
+        <span className="alert-message">{alert.message}</span>
+        <button
+          className="alert-close"
+          onClick={() => setAlert({ ...alert, show: false })}
+          aria-label="Close alert"
+        >
+          ×
+        </button>
       </div>
-    </>
-  );
+    )}
+
+    <div className="login-container">
+      <div className="login-card">
+        <h1>Login</h1>
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={errors.email ? "email-error" : undefined}
+            />
+            {errors.email && (
+              <span id="email-error" className="error-message" role="alert">
+                {errors.email}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={errors.password ? "true" : "false"}
+              aria-describedby={errors.password ? "password-error" : undefined}
+            />
+            {errors.password && (
+              <span id="password-error" className="error-message" role="alert">
+                {errors.password}
+              </span>
+            )}
+          </div>
+
+          <button type="submit" className="login-button">
+            Login
+          </button>
+        </form>
+
+        <div className="forgot-password-link">
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </div>
+
+        <p className="register-link">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
+      </div>
+    </div>
+  </>
+);
 }
-
-
 
 export default Login;

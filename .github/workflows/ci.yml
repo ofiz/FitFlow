@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master, dashboard ]  
+    branches: [ '**' ]  # CI: Run on all branches
   pull_request:
-    branches: [ main, master ]  
+    branches: [ master ]  # CI: Run on PRs targeting master  
 
 jobs:
   test:
@@ -51,7 +51,7 @@ jobs:
     name: Build Docker Images
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    # Run on both PRs (to verify builds) and pushes to master
     
     steps:
       - name: Checkout code
@@ -75,14 +75,14 @@ jobs:
           context: ./client
           push: false
           tags: fitflow-client:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true
 
   docker-hub:
     name: Push to Docker Hub
     needs: [test, build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    # CD: Only push to Docker Hub on merge to master
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     
     steps:
       - name: Checkout code
@@ -116,5 +116,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:latest
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true

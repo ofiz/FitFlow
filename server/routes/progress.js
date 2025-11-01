@@ -6,10 +6,13 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directory exists
-const uploadDir = 'uploads/progress-photos/';
+// Ensure upload directory exists - using absolute path
+const uploadDir = path.join(__dirname, '..', 'uploads', 'progress-photos');
+
+// Create directory synchronously before anything else
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
+  console.log('Created upload directory:', uploadDir);
 }
 
 // Configure multer for file uploads
@@ -37,7 +40,10 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { 
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1
+  },
   fileFilter: fileFilter
 });
 
