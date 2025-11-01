@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master, dashboard ]  # הוסף master
+    branches: [ '**' ]  # CI: Run on all branches
   pull_request:
-    branches: [ main, master ]  # הוסף master
+    branches: [ master ]  # CI: Run on PRs targeting master  
 
 jobs:
   test:
@@ -46,7 +46,7 @@ jobs:
     name: Build Docker Images
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    # Run on both PRs (to verify builds) and pushes to master
     
     steps:
       - name: Checkout code
@@ -76,7 +76,8 @@ jobs:
     name: Push to Docker Hub
     needs: [test, build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    # CD: Only push to Docker Hub on merge to master
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     
     steps:
       - name: Checkout code
