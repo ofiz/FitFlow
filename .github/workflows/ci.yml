@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ '**' ]  # CI: Run on all branches
+    branches: [ 'master' ]  # CI: Run on all branches
   pull_request:
     branches: [ master ]  # CI: Run on PRs targeting master  
 
@@ -47,9 +47,41 @@ jobs:
           name: coverage-report
           path: server/coverage/
 
+  test-ml:
+    name: Run ML Service Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: ml-service/requirements.txt
+      
+      - name: Install dependencies
+        working-directory: ./ml-service
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run tests
+        working-directory: ./ml-service
+        run: pytest tests/ -v --cov=src --cov-report=xml --cov-report=html
+      
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ml-coverage-report
+          path: ml-service/htmlcov/
+
   build:
     name: Build Docker Images
-    needs: test
+    needs: [test, test-ml]
     runs-on: ubuntu-latest
     # Run on both PRs (to verify builds) and pushes to master
     
@@ -76,10 +108,19 @@ jobs:
           push: false
           tags: fitflow-client:${{ github.sha }}
           no-cache: true
+      
+      - name: Build ML Service Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ml-service
+          push: false
+          tags: fitflow-ml-service:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   docker-hub:
     name: Push to Docker Hub
-    needs: [test, build]
+    needs: [test, test-ml, build]
     runs-on: ubuntu-latest
     # CD: Only push to Docker Hub on merge to master
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -117,3 +158,14 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:latest
             ${{ secrets.DOCKER_USERNAME }}/fitflow-client:${{ github.sha }}
           no-cache: true
+      
+      - name: Build and Push ML Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ml-service
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/fitflow-ml-service:latest
+            ${{ secrets.DOCKER_USERNAME }}/fitflow-ml-service:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

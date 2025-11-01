@@ -131,15 +131,24 @@ body {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-  color: #fff;
-  border: none;
+/* Override global button styles for .btn-primary */
+.auth-buttons .btn-primary,
+.btn.btn-primary {
+  background: linear-gradient(135deg, #ff8a9b, #4ecdc4) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 12px 28px !important;
+  border-radius: 25px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+.auth-buttons .btn-primary:hover,
+.btn.btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(78, 205, 196, 0.4) !important;
+  opacity: 0.95 !important;
+  border-color: transparent !important;
 }
 
 /* Hero Section */
