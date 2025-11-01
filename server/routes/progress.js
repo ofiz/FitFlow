@@ -68,6 +68,12 @@ router.get('/photos', auth, progressController.getPhotos);
 // Get a specific photo by ID
 router.get('/photos/:photoId', auth, progressController.getPhotoById);
 
+// Compare two photos
+router.post('/compare', auth, progressController.comparePhotos);
+
+// Re-analyze a photo with AI
+router.post('/photos/:photoId/reanalyze', auth, progressController.reanalyzePhoto);
+
 // Delete a progress photo
 router.delete('/photos/:photoId', auth, progressController.deletePhoto);
 

@@ -9,22 +9,6 @@
   padding-bottom: 40px;
 }
 
-.tab-header {
-  margin-bottom: 8px;
-}
-
-.tab-title {
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: white;
-}
-
-.tab-subtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 16px;
-}
-
 .gradient-purple-pink {
   background: linear-gradient(135deg, #c084fc, #f9a8d4);
   -webkit-background-clip: text;
