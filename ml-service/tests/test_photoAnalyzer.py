@@ -11,10 +11,10 @@ import io
 import sys
 import os
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add parent directory to path to import src modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from photoAnalyzer import ProgressPhotoAnalyzer, get_analyzer
+from src.photoAnalyzer import ProgressPhotoAnalyzer, get_analyzer
 
 
 class TestProgressPhotoAnalyzer:

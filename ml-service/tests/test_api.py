@@ -10,10 +10,10 @@ import os
 from PIL import Image
 import io
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add parent directory to path to import src modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from app import app
+from src.app import app
 
 
 @pytest.fixture
