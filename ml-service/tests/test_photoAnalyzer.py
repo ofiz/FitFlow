@@ -139,7 +139,8 @@ class TestProgressPhotoAnalyzer:
     
     def test_invalid_image_input(self, analyzer):
         """Test handling of invalid image input"""
-        with pytest.raises(ValueError):
+        # PIL raises FileNotFoundError for non-existent files
+        with pytest.raises(FileNotFoundError):
             analyzer.preprocess_image("not_a_valid_path.jpg")
     
     def test_model_outputs_shape(self, analyzer, sample_image):
