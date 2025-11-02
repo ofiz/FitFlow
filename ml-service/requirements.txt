@@ -1,23 +1,23 @@
 # Core ML/DL Libraries
-tensorflow==2.15.0
-numpy==1.24.3
-pillow==10.0.0
-opencv-python-headless==4.8.1.78
+tensorflow==2.18.0
+numpy==1.26.4
+pillow==10.3.0             
+opencv-python-headless==4.10.0.84
 
 # Web Framework
-flask==3.0.0
-flask-cors==4.0.0
-gunicorn==21.2.0
+flask==3.1.1
+flask-cors==6.0.0          
+gunicorn==22.0.0          
 
 # Utilities
-python-dotenv==1.0.0
-requests==2.31.0
+python-dotenv==1.0.1
+requests==2.32.4           
 
 # Testing
-pytest==7.4.3
-pytest-cov==4.1.0
-pytest-mock==3.12.0
+pytest==8.3.3
+pytest-cov==6.0.0
+pytest-mock==3.14.0
 
 # Image Processing
-scikit-image==0.22.0
-scipy==1.11.4
+scikit-image==0.24.0
+scipy==1.14.1

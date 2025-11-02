@@ -113,14 +113,14 @@ Output    Output   Output
 
 ### Technology Stack
 
-- **Framework**: Flask 3.0.0
-- **ML/DL**: TensorFlow 2.15.0
+- **Framework**: Flask 3.1.1
+- **ML/DL**: TensorFlow 2.18.0
 - **Image Processing**: 
-  - Pillow 10.0.0
-  - OpenCV 4.8.1
-  - scikit-image 0.22.0
-- **Server**: Gunicorn 21.2.0
-- **Testing**: pytest 7.4.3
+  - Pillow 10.3.0
+  - OpenCV 4.10.0.84
+  - scikit-image 0.24.0
+- **Server**: Gunicorn 22.0.0 
+- **Testing**: pytest 8.3.3
 
 ### Transfer Learning
 
